@@ -4,6 +4,7 @@ namespace Elio\FastOrder;
 
 use Shopware\Core\Framework\Plugin;
 
-class FastOrder extends Plugin
+class ElioFastOrder extends Plugin
 {
+
 }

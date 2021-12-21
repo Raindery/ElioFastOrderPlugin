@@ -10,10 +10,10 @@
     }
   ],
   "require": {
-    "shopware/core": "*"
+    "shopware/core": "6.4.*"
   },
   "extra": {
-    "shopware-plugin-class": "Elio\\FastOrder\\FastOrder",
+    "shopware-plugin-class": "Elio\\FastOrder\\ElioFastOrder",
     "label": {
       "de-DE": "Schnelle Bestellung",
       "en-GB": "Fast Order"
