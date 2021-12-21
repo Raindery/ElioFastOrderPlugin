@@ -1,18 +1,31 @@
 {
-  "name": "swag/plugin-skeleton",
-  "description": "Skeleton plugin",
+  "name": "elio/fast-order",
+  "description": "Fast order for customers",
+  "version": "v0.0.1",
   "type": "shopware-platform-plugin",
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "ElioFastOrder\\": "src/"
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "im/elioGmbH"
     }
+  ],
+  "require": {
+    "shopware/core": "*"
   },
   "extra": {
-    "shopware-plugin-class": "ElioFastOrder\\ElioFastOrder",
+    "shopware-plugin-class": "Elio\\FastOrder\\FastOrder",
     "label": {
-      "de-DE": "Skeleton plugin",
-      "en-GB": "Skeleton plugin"
+      "de-DE": "Schnelle Bestellung",
+      "en-GB": "Fast Order"
+    },
+    "description": {
+      "de-DE": "Schnelle Bestellung für Kunden",
+      "en-GB": "Fast order for customers"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Elio\\FastOrder\\": "src/"
     }
   }
 }

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace ElioFastOrder;
+namespace Elio\FastOrder;
 
 use Shopware\Core\Framework\Plugin;
 
-class ElioFastOrder extends Plugin
+class FastOrder extends Plugin
 {
 }
