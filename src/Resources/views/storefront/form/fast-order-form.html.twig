@@ -1,0 +1,27 @@
+
+<div class="row justify-content-center">
+    <div class="card col-md-8">
+        <div class="card-body">
+            <form action="{{ path('frontend.checkout.cart.page') }}" method="get" data-form-csrf-handler="true">
+                <div class="form-content">
+                    <div class="form-row justify-content-center">
+                            {% sw_include '@ElioFastOrder/storefront/form/fast-order-product-search.html.twig'
+                            %}
+                        {{ dump() }}
+
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Add to shopping list</button>
+            </form>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
