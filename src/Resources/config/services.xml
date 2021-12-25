@@ -7,6 +7,9 @@
     <services>
         <service id="Elio\FastOrder\Controller\FastOrderController" public="true">
             <argument id="product.repository" type="service" />
+            <argument id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" type="service"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\LineItemFactoryRegistry"/>
+
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
