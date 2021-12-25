@@ -1,0 +1,11 @@
+{% sw_extends '@Storefront/storefront/layout/header/account-menu.html.twig' %}
+
+{% block layout_header_actions_account_widget_dropdown_login %}
+    {{ parent() }}
+
+    <div class="text-center">
+        <a style="margin-bottom: 5%; margin-top: 5%" class="btn btn-primary" href="{{ path('store-api.fast-order') }}" title="Fast order">Fast order</a>
+    </div>
+
+{% endblock %}
+
