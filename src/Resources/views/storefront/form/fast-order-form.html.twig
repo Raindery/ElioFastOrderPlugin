@@ -1,13 +1,34 @@
 <div class="row justify-content-center">
     <div class="card col-md-8">
         <div class="card-body">
-            <form action="{{ path('store-api.fast-order.add-to-card') }}" method="get" data-form-csrf-handler="true">
+            <form action="{{ path('store-api.fast-order.add-to-card') }}" method="post">
                 <div class="form-content">
-                    <div class="form-row justify-content-center">
-                        {{ dump() }}
-                    </div>
+                    {% block fast_order_article_input %}
+                        <div class="form-row justify-content-center">
+                            
+                            {% sw_include '@Storefront/storefront/element/cms-element-form/form-components/cms-element-form-input.html.twig'
+                                with{
+                                type: 'text',
+                                fieldName: 'productNumber',
+                                placeholder: 'Product number'
+                            }
+                            %}
+
+                            {% sw_include '@Storefront/storefront/element/cms-element-form/form-components/cms-element-form-input.html.twig'
+                                with{
+                                type: 'number',
+                                fieldName: 'productQuantity',
+                                placeholder:'Quantity'
+                            }
+                            %}
+                            
+
+                        </div>
+                    {% endblock %}
                 </div>
                 <button class="btn btn-primary" type="submit">Add to shopping list</button>
+
+                {{ sw_csrf('store-api.fast-order.add-to-card') }}
             </form>
         </div>
     </div>

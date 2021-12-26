@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
         <service id="Elio\FastOrder\Controller\FastOrderController" public="true">
             <argument id="product.repository" type="service" />
             <argument id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" type="service"/>

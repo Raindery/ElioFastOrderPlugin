@@ -2,6 +2,7 @@
 
 namespace Elio\FastOrder\Controller;
 
+use Elio\FastOrder\Core\Content\FastOrder\FastOrderEntity;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\LineItemFactoryRegistry;
@@ -14,11 +15,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\PrefixFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * @RouteScope(scopes={"storefront"})
@@ -26,11 +30,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class FastOrderController extends StorefrontController
 {
     private LineItemFactoryRegistry $factory;
-
     private EntityRepositoryInterface $productsRepository;
-
     private CartService $cartService;
-
 
     public function __construct(EntityRepositoryInterface $productsRepository, CartService $cartService, LineItemFactoryRegistry $factory)
     {
@@ -46,26 +47,43 @@ class FastOrderController extends StorefrontController
      */
     public function showFastOrderForm(Context $context) : Response
     {
+
+
+
         $productNumber = 'f7';
-        return $this->renderStorefront('@ElioFastOrder/storefront/form/fast-order.html.twig', ['products' => $this->getProductByProductNumber($context, $productNumber)]);
+        return $this->renderStorefront('@ElioFastOrder/storefront/form/fast-order.html.twig',
+            [
+                'products' => $this->getProductByProductNumber($context, $productNumber)
+            ]);
     }
 
 
     /**
-     * @Route ("/fast-order/add-to-cart", name="store-api.fast-order.add-to-card", methods={"GET"})
+     * @Route ("/fast-order/add-to-cart", name="store-api.fast-order.add-to-card", methods={"POST"})
+     * @param Request $request
      * @param SalesChannelContext $context
      * @param Cart $cart
      * @return Response
      */
-    public function addProductsToCart(SalesChannelContext $context, Cart $cart) : Response
+    public function addProductsToCart(Request $request, SalesChannelContext $context, Cart $cart) : Response
     {
-        $productNumber = 'f7';
+        $productNumber = $request->request->get('productNumber');
+        $productQuantity = $request->request->getInt('productQuantity');
+
+        if(!$productNumber){
+            throw new MissingRequestParameterException('productNumber');
+        }
+
+        if(!$productQuantity){
+            throw new MissingRequestParameterException('productQuantity');
+        }
+
         $product = $this->getProductByProductNumber($context->getContext(), $productNumber)->first();
 
         $lineItem = $this->factory->create([
             'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
             'referencedId' => $product->getId(),
-            'quantity'=> 10
+            'quantity'=> $productQuantity
         ], $context);
 
         $this->cartService->add($cart, $lineItem, $context);
