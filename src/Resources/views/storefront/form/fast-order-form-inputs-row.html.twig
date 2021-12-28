@@ -1,0 +1,40 @@
+{% block fast_order_form_inputs_row %}
+    <div class="row align-items-start">
+        <div class="col-7" style="padding-left: 0">
+            <label style="width: 100%">
+                <input
+                       type="text"
+                       name="productData[{{ fastOrderProductId }}][productNumber]"
+                       value="{{ data.get( 'productData[{{ productId }}][productNumber]' ) }}"
+                       placeholder="{{ productNumberCustomPlaceholder }}"
+                       {% if required %}required="required"{% endif %}
+                       class="form-control"
+                >
+            </label>
+        </div>
+
+        <div class="col-5" style="padding-right: 0; width: 100%">
+            <label style="width: 100%;">
+                <select class="custom-select"
+                        name="productData[{{ fastOrderProductId }}][productQuantity]"
+                        data-value="{{ data.get( "productData[{{ fastOrderProductId }}][productQuantity]" ) }}"
+                        {% if productQuantityRequired %}required="required"{% endif %}
+                >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </label>
+        </div>
+
+    </div>
+
+
+{% endblock %}
