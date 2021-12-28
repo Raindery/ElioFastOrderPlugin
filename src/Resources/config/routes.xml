@@ -5,4 +5,6 @@
         https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <import resource="../../Controller/FastOrderController.php" type="annotation" />
+
+    <import resource="../../Controller/FastOrderSearchController.php" type="annotation" />
 </routes>
