@@ -45,7 +45,6 @@ class FastOrderController extends StorefrontController
         return $this->renderStorefront('@ElioFastOrder/storefront/form/fast-order.html.twig');
     }
 
-
     /**
      * @Route ("/fast-order/add-to-cart", name="store-api.fast-order.add-to-card", methods={"POST"})
      * @param Request $request
