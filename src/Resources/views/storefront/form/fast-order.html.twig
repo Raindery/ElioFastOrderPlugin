@@ -1,81 +1,222 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 
-
-
 {% block base_main %}
 
     {% block base_flashbags %}
         {{ parent() }}
     {% endblock%}
 
+{# -----
 <div class="row">
-    <div class="col-12 order-2 col-sm order-sm-1 header-search-col">
-        <div class="row">
-            <div class="col-sm-auto d-none d-sm-block d-lg-none">
-                {% block layout_header_navigation_toggle_tablet %}
-                    <div class="nav-main-toggle">
-                        {% block layout_header_navigation_toggle_tablet_button %}
-                            <button class="btn nav-main-toggle-btn header-actions-btn"
-                                    type="button"
-                                    data-offcanvas-menu="true"
-                                    aria-label="{{ "general.menuLink"|trans|striptags }}">
-                                {% block layout_header_navigation_toggle_tablet_button_icon %}
-                                    {% sw_icon 'plus' %}
-                                {% endblock %}
-                            </button>
-                        {% endblock %}
-                    </div>
-                {% endblock %}
-            </div>
-            <div class="col">
-                <div class="collapse"
-                     id="searchCollapse">
-                    <div class="header-search">
-                        <form action="{{ path('frontend.search.page') }}"
-                              method="get"
-                              data-search-form="true"
-                              data-url="{{ path('frontend.search.suggest') }}?search="
-                              class="header-search-form">
-                            {% block layout_header_search_input_group %}
-                                <div class="input-group">
-                                    {% block layout_header_search_input %}
-                                        <input type="search"
-                                               name="search"
-                                               class="form-control header-search-input"
-                                               autocomplete="off"
-                                               autocapitalize="off"
-                                               placeholder="{{ "header.searchPlaceholder"|trans|striptags }}"
-                                               aria-label="{{ "header.searchPlaceholder"|trans|striptags }}"
-                                               value="{{ page.searchTerm }}"
-                                        >
-                                    {% endblock %}
-
-                                    {% block layout_header_search_button %}
-                                        <div class="input-group-append">
-                                            <button type="submit"
-                                                    class="btn header-search-btn"
-                                                    aria-label="{{ "header.searchButton"|trans|striptags }}">
-                                    <span class="header-search-icon">
-                                        {% sw_icon 'search' %}
-                                    </span>
-                                            </button>
-                                        </div>
-                                    {% endblock %}
-                                </div>
+<div class="col-12 order-2 col-sm order-sm-1 header-search-col">
+    <div class="row">
+        <div class="col-sm-auto d-none d-sm-block d-lg-none">
+            {% block layout_header_navigation_toggle_tablet %}
+                <div class="nav-main-toggle">
+                    {% block layout_header_navigation_toggle_tablet_button %}
+                        <button class="btn nav-main-toggle-btn header-actions-btn"
+                                type="button"
+                                data-offcanvas-menu="true"
+                                aria-label="{{ "general.menuLink"|trans|striptags }}">
+                            {% block layout_header_navigation_toggle_tablet_button_icon %}
+                                {% sw_icon 'plus' %}
                             {% endblock %}
-                        </form>
-                    </div>
+                        </button>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col">
+            <div class="collapse"
+                 id="searchCollapse">
+                <div class="header-search">
+                    <form onsubmit="return false;"
+                          data-search-form="true"
+                          data-url="{{ path('frontend.fast-order.suggest') }}?search="
+                          class="header-search-form">
+                        {% block layout_header_search_input_group %}
+                            <div class="input-group">
+                                {% block layout_header_search_input %}
+                                    <input type="search"
+                                           name="search"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           autocapitalize="off"
+                                           placeholder="{{ "header.searchPlaceholder"|trans|striptags }}"
+                                           aria-label="{{ "header.searchPlaceholder"|trans|striptags }}"
+                                           value="{{ page.searchTerm }}"
+                                    >
+                                {% endblock %}
+
+                                {% block layout_header_search_button %}
+                                    <div class="input-group-append">
+                                        <button type="submit"
+                                                class="btn header-search-btn"
+                                                onclick=" return false;"
+                                                >
+                                        </button>
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
+#}
+
+    {% block fast_order_form_container %}
+        <div class="d-flex justify-content-center">
+            <div class="card col-8">
+
+                {% block fast_order_form_header %}
+                    <div class="card-header fast-order-card-header">
+                        <div class="card-group">
+                            {% block fast_order_form_header_menu_button_enter_articles %}
+                                <button class="btn header-actions-btn" type="button" data-offcanvas-account-menu="true" style="padding-left: 0">
+                                    {% sw_icon 'paper-pencil' style{
+                                        'pack':'default'
+                                    } %}
+                                    Enter articles
+                                </button>
+                            {% endblock %}
+                        </div>
+                        <p class="card-text fast-order-form-description">
+                            Please enter the product number and quantities you want to order.
+                            The availability of the product number is checked and displayed
+                            directly while typing. You can enter all data completely via keyboard.
+                            In the result, you can navigate through the results with the arrow up
+                            and arrow down key. With the enter key you can select the correct entry.
+                        </p>
+                    </div>
+                {% endblock %}
+
+                {% block fast_order_from_body %}
+                    <div class="card-body" style="padding: .75rem 1.25rem;">
+                        <div class="container">
+                            {% block fast_order_form_titles %}
+                                <div class="row align-items-start">
+                                    <div class="col-7 fast-order-col-left">
+                                        <h1 class="card-title">
+                                            Product number
+                                        </h1>
+                                    </div>
+
+                                    <div class="col-5 fast-order-col-right">
+                                        <h1 class="card-title">
+                                            Quantity
+                                        </h1>
+                                    </div>
+                                </div>
+                            {% endblock %}
+
+                            {% block fast_order_form %}
+                                <form action="{{ path('store-api.fast-order.add-to-card') }}"
+                                      method="post"
+                                      data-form-csrf-handler="true" >
+
+                                    {% block fast_order_form_main_product_field %}
+                                    {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
+                                        with{
+                                        fastOrderProductId:"0",
+                                        required:"required",
+                                    }
+                                    %}
+                                    {% endblock %}
+
+                                    {% block fast_order_form_main_product_amount %}
+                                        <div class="row" style="padding: .3rem 0;">
+                                            <div class="col-7 fast-order-col-left">
+                                                <h6>
+                                                    Main product
+                                                </h6>
+                                            </div>
+
+                                            <div class="col-5 fast-order-col-right d-flex justify-content-end ">
+                                                <h4>
+                                                    &euro;0
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    {% endblock %}
+
+                                    {% block fast_order_form_input_fields %}
+                                        {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
+                                            with{ fastOrderProductId:"1", extraClass:"fast-order-input-field" }
+                                        %}
+
+                                        {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
+                                            with{ fastOrderProductId:"2", extraClass: "fast-order-input-field" }
+                                        %}
+
+                                        {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
+                                            with{ fastOrderProductId:"3", extraClass:"fast-order-input-field" }
+                                        %}
+
+                                        {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
+                                            with{ fastOrderProductId:"4", extraClass:"fast-order-input-field" }
+                                        %}
+                                    {% endblock %}
+
+                                    {% block fast_order_total_amount %}
+                                    <div class="row d-flex align-content-end justify-content-end">
+                                        <p class="mr-2 mb-0">Total amount: </p>
+                                        <h4 class="mb-0">&euro;<span>0</span></h4>
+                                    </div>
+                                    {% endblock %}
+
+                                    {% block fast_order_submit_button %}
+                                        <div class="row align-items-start fast-order-input-submit">
+                                            <button class="btn btn-primary" type="submit" >Add to shopping list</button>
+                                        </div>
+                                    {% endblock %}
+
+                                    {{ sw_csrf('store-api.fast-order.add-to-card') }}
+                                </form>
+                            {% endblock %}
+                        </div>
+                    </div>
+                {% endblock %}
+
+            </div>
+        </div>
+    {% endblock %}
+
+    <style>
+        .ctm-input-field>label{
+            display: none;
+        }
+        
+        .fast-order-card-header{
+            background-color: #fff;
+        }
+
+        .fast-order-form-description{
+            padding: 1rem 0;
+        }
+
+        .fast-order-col-right{
+            padding-right: 0;
+        }
+
+        .fast-order-col-left{
+            padding-left: 0;
+        }
+
+
+        .fast-order-input-field{
+            padding: .2rem 0;
+        }
+        .fast-order-input-submit{
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
 
 
 
-    {% sw_include '@ElioFastOrder/storefront/form/fast-order-form.html.twig' %}
-
+    </style>
 
 {% endblock %}
-
-
