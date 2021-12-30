@@ -2,11 +2,14 @@
 
 namespace Elio\FastOrder\Controller;
 
+use App\Product;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Content\Product\Cart\ProductLineItemFactory;
 use Shopware\Core\Content\Product\Exception\ProductNotFoundException;
+use Shopware\Core\Content\Product\Exception\ProductNumberNotFoundException;
 use Shopware\Core\Content\Product\ProductCollection;
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\PrefixFilter;
@@ -16,6 +19,7 @@ use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,36 +59,34 @@ class FastOrderController extends StorefrontController
     {
         /** @var array $productsData */
         $productsData = $request->request->get('productData');
-
         if(!$productsData){
-            throw new MissingRequestParameterException('productNumber');
+            throw new MissingRequestParameterException('productData');
         }
 
-        $productsCount = 0;
-        foreach ($productsData as $productData) {
-            $productsCount += (int)$productData['productQuantity'];
-        }
-        if($productsCount < 10){
-            $this->addFlash(self::DANGER, 'The total number of products must be more than 10!');
+        if(!$this->isProductsDataValidate($productsData, $context)){
             return $this->redirectToRoute('store-api.fast-order');
         }
-
 
         /** @var LineItem[] $products */
         $products = array();
 
         foreach ($productsData as $productData) {
+            $productNumber = $productData['productNumber'];
 
-            if($productData['productNumber'] === ''){
+            if($productNumber === ''){
                 $this->addFlash(self::WARNING, 'Product number not entered');
                 continue;
             }
 
-            $productId = $this->getProductByProductNumber($context, $productData['productNumber'])->first()->getId();
+            /** @var int $productQuantity */
+            $productQuantity = $productData['productQuantity'];
 
-            $products[] = $this->productLineItemFactory->create($productId, [
-                'quantity' => (int)$productData['productQuantity']
+            $product = $this->getProductByProductNumber($context, $productData['productNumber']);
+
+            $products[] = $this->productLineItemFactory->create($product->getId(), [
+                'quantity' => $productQuantity
             ]);
+
         }
 
         $cart = $this->cartService->getCart($context->getToken(), $context);
@@ -94,27 +96,65 @@ class FastOrderController extends StorefrontController
         return $this->redirectToRoute('frontend.checkout.cart.page');
     }
 
-
     /**
      * @param SalesChannelContext $context
      * @param string $productNumber
-     * @return ProductCollection
+     * @return ProductEntity|null
      */
-    private function getProductByProductNumber(SalesChannelContext $context, string $productNumber): ProductCollection
+    private function getProductByProductNumber(SalesChannelContext $context, string $productNumber): ?ProductEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('available', '1'));
-        $criteria->addFilter(new PrefixFilter('productNumber', $productNumber));
+        $criteria->addFilter(new EqualsFilter('productNumber', $productNumber));
 
         /**
-         * @var ProductCollection $products
+         * @var ProductEntity $product
          */
-        $products = $this->productsRepository->search($criteria, $context)->getEntities();
+        $product = $this->productsRepository->search($criteria, $context)->getEntities()->first();
 
-        if($products->count() === 0){
-            throw new ProductNotFoundException('');
+        if($product === null){
+            return null;
         }
 
-        return $products;
+        return $product;
+    }
+
+    private function isProductsDataValidate(array $productsData, SalesChannelContext $context): bool
+    {
+        $isAllProductFound = true;
+        $productsCount = 0;
+
+        foreach ($productsData as $productData) {
+            $productNumber = $productData['productNumber'];
+
+            if($productNumber === ''){
+                continue;
+            }
+
+            /** @var int $productQuantity */
+            $productQuantity = $productData['productQuantity'];
+
+            $product = $this->getProductByProductNumber($context, $productNumber);
+
+            if($product === null){
+                $isAllProductFound = false;
+                $this->addFlash(self::DANGER, sprintf('Product not found by number %s', $productNumber));
+                continue;
+            }
+
+            $productsCount += $productQuantity;
+        }
+
+
+        if(!$isAllProductFound){
+            return false;
+        }
+
+        if($productsCount < 10){
+            $this->addFlash(self::DANGER, 'The total number of products must be more than 10!');
+            return false;
+        }
+
+        return true;
     }
 }

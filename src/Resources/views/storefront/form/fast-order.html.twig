@@ -2,14 +2,13 @@
 
 {% block base_main %}
 
-    {% block base_flashbags %}
-        {{ parent() }}
-    {% endblock%}
-
-
     {% block fast_order_form_container %}
         <div class="d-flex justify-content-center">
             <div class="card col-8">
+
+                {% block base_flashbags %}
+                    {{ parent() }}
+                {% endblock%}
 
                 {% block fast_order_form_header %}
                     <div class="card-header fast-order-card-header">
