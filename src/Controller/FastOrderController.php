@@ -68,7 +68,7 @@ class FastOrderController extends StorefrontController
             $productNumber = $productData['productNumber'];
 
             if($productNumber === ''){
-                $this->addFlash(self::WARNING, 'Product number not entered');
+                $this->addFlash(self::WARNING, $this->trans('elio_fast_order.flash.warningProductNumberNotEntered'));
                 continue;
             }
 
@@ -86,7 +86,7 @@ class FastOrderController extends StorefrontController
         $cart = $this->cartService->getCart($context->getToken(), $context);
         $this->cartService->add($cart, $products, $context);
 
-        $this->addFlash(self::SUCCESS, 'Products added to cart ');
+        $this->addFlash(self::SUCCESS, $this->trans('elio_fast_order.flash.successProductAddedToCart'));
         return $this->redirectToRoute('frontend.checkout.cart.page');
     }
 
@@ -132,7 +132,7 @@ class FastOrderController extends StorefrontController
 
             if($product === null){
                 $isAllProductFound = false;
-                $this->addFlash(self::DANGER, sprintf('Product not found by number %s', $productNumber));
+                $this->addFlash(self::DANGER, $this->trans('elio_fast_order.flash.dangerProductNotFoundByNumber', ['%number%' => $productNumber]));
                 continue;
             }
 
@@ -145,7 +145,7 @@ class FastOrderController extends StorefrontController
         }
 
         if($productsCount < 10){
-            $this->addFlash(self::DANGER, 'The total number of products must be more than 10!');
+            $this->addFlash(self::DANGER, $this->trans('elio_fast_order.flash.dangerTotalCountProducts', ['%count%' => 10]));
             return false;
         }
 

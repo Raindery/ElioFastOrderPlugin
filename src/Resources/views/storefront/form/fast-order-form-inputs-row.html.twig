@@ -8,7 +8,7 @@
                        type="text"
                        name="productData[{{ fastOrderProductId }}][productNumber]"
                        value="{{ data.get( 'productData[{{ productId }}][productNumber]' ) }}"
-                       placeholder="Search product number..."
+                       placeholder="{{'elio_fast_order.form.fieldPlaceholderInColLeft' |trans }}"
                        {% if required %}required="required"{% endif %}
                        class="form-control"
                 >

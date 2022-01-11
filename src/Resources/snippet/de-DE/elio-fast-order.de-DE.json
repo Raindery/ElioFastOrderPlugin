@@ -1,0 +1,21 @@
+{
+  "elio_fast_order": {
+    "buttonTitle": "Fast order",
+    "form": {
+      "headerButtonEnterArticles": "Enter articles",
+      "description": "Please enter the product number and quantities you want to order. The availability of the product number is checked and displayed directly while typing. You can enter all data completely via keyboard. In the result, you can navigate through the results with the arrow up and arrow down key. With the enter key you can select the correct entry.",
+      "titleInColLeft": "Product number",
+      "fieldPlaceholderInColLeft": "Search product number",
+      "titleInColRight": "Quantity",
+      "subtitleMainProduct": "Main product",
+      "totalAmount": "Total amount:",
+      "submitTitle": "Add to shopping list"
+    },
+    "flash": {
+      "warningProductNumberNotEntered": "Product number not entered",
+      "successProductAddedToCart": "Product added to cart",
+      "dangerProductNotFoundByNumber": "Product not found by number %number%",
+      "dangerTotalCountProducts": "The total count of products must be more than %count%!"
+    }
+  }
+}

@@ -8,7 +8,7 @@
 
                 {% block base_flashbags %}
                     {{ parent() }}
-                {% endblock%}
+                {% endblock %}
 
                 {% block fast_order_form_header %}
                     <div class="card-header fast-order-card-header">
@@ -18,16 +18,12 @@
                                     {% sw_icon 'paper-pencil' style{
                                         'pack':'default'
                                     } %}
-                                    Enter articles
+                                    {{ 'elio_fast_order.form.headerButtonEnterArticles'|trans }}
                                 </button>
                             {% endblock %}
                         </div>
                         <p class="card-text fast-order-form-description">
-                            Please enter the product number and quantities you want to order.
-                            The availability of the product number is checked and displayed
-                            directly while typing. You can enter all data completely via keyboard.
-                            In the result, you can navigate through the results with the arrow up
-                            and arrow down key. With the enter key you can select the correct entry.
+                            {{ 'elio_fast_order.form.description'|trans }}
                         </p>
                     </div>
                 {% endblock %}
@@ -39,13 +35,13 @@
                                 <div class="row align-items-start">
                                     <div class="col-7 fast-order-col-left">
                                         <h1 class="card-title">
-                                            Product number
+                                            {{ 'elio_fast_order.form.titleInColLeft'|trans }}
                                         </h1>
                                     </div>
 
                                     <div class="col-5 fast-order-col-right">
                                         <h1 class="card-title">
-                                            Quantity
+                                            {{ 'elio_fast_order.form.titleInColRight'|trans }}
                                         </h1>
                                     </div>
                                 </div>
@@ -69,7 +65,7 @@
                                         <div class="row" style="padding: .3rem 0;">
                                             <div class="col-7 fast-order-col-left">
                                                 <h6>
-                                                    Main product
+                                                    {{ 'elio_fast_order.form.subtitleMainProduct'|trans }}
                                                 </h6>
                                             </div>
 
@@ -101,14 +97,14 @@
 
                                     {% block fast_order_total_amount %}
                                     <div class="row d-flex align-content-end justify-content-end">
-                                        <p class="mr-2 mb-0">Total amount: </p>
+                                        <p class="mr-2 mb-0">{{ 'elio_fast_order.form.totalAmount'|trans }}</p>
                                         <h4 class="mb-0">&euro;<span>0</span></h4>
                                     </div>
                                     {% endblock %}
 
                                     {% block fast_order_submit_button %}
                                         <div class="row align-items-start fast-order-input-submit">
-                                            <button class="btn btn-primary" type="submit" >Add to shopping list</button>
+                                            <button class="btn btn-primary" type="submit" >{{ 'elio_fast_order.form.submitTitle'|trans }}</button>
                                         </div>
                                     {% endblock %}
 
