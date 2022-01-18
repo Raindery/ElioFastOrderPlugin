@@ -14,6 +14,7 @@ use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 
+use Shopware\Storefront\Page\GenericPageLoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,25 +27,35 @@ class FastOrderController extends StorefrontController
     private CartService $cartService;
     private SalesChannelRepositoryInterface $productsRepository;
     private ProductLineItemFactory $productLineItemFactory;
+    private GenericPageLoaderInterface $genericPageLoader;
 
-    public function __construct(CartService $cartService, SalesChannelRepositoryInterface $productsRepository, ProductLineItemFactory $productLineItemFactory)
+    public function __construct(CartService $cartService,
+        SalesChannelRepositoryInterface $productsRepository,
+        ProductLineItemFactory $productLineItemFactory,
+        GenericPageLoaderInterface $genericPageLoader)
     {
         $this->cartService = $cartService;
         $this->productsRepository = $productsRepository;
         $this->productLineItemFactory = $productLineItemFactory;
+        $this->genericPageLoader = $genericPageLoader;
     }
 
     /**
-     * @Route ("/fast-order", name="store-api.fast-order", methods={"GET"})
+     * @Route ("/fast-order", name="storefront.fast-order", methods={"GET"})
+     * @param Request $request
+     * @param SalesChannelContext $context
      * @return Response
      */
-    public function showFastOrderForm() : Response
+    public function showFastOrderForm(Request $request, SalesChannelContext $context) : Response
     {
-        return $this->renderStorefront('@ElioFastOrder/storefront/form/fast-order.html.twig');
+        $page = $this->genericPageLoader->load($request, $context);
+        return $this->renderStorefront('@ElioFastOrder/storefront/form/fast-order.html.twig', [
+            'page'=> $page
+        ]);
     }
 
     /**
-     * @Route ("/fast-order/add-to-cart", name="store-api.fast-order.add-to-card", methods={"POST"})
+     * @Route ("/fast-order/add-to-cart", name="storefront.fast-order.add-to-card", methods={"POST"})
      * @param Request $request
      * @param SalesChannelContext $context
      * @return Response
@@ -56,22 +67,13 @@ class FastOrderController extends StorefrontController
         if(!$productsData){
             throw new MissingRequestParameterException('productData');
         }
-
         if(!$this->isProductsDataValidate($productsData, $context)){
-            return $this->redirectToRoute('store-api.fast-order');
+            return $this->redirectToRoute('storefront.fast-order');
         }
 
         /** @var LineItem[] $products */
         $products = array();
-
         foreach ($productsData as $productData) {
-            $productNumber = $productData['productNumber'];
-
-            if($productNumber === ''){
-                $this->addFlash(self::WARNING, $this->trans('elio_fast_order.flash.warningProductNumberNotEntered'));
-                continue;
-            }
-
             /** @var int $productQuantity */
             $productQuantity = $productData['productQuantity'];
 
@@ -80,7 +82,6 @@ class FastOrderController extends StorefrontController
             $products[] = $this->productLineItemFactory->create($product->getId(), [
                 'quantity' => $productQuantity
             ]);
-
         }
 
         $cart = $this->cartService->getCart($context->getToken(), $context);

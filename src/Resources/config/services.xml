@@ -9,7 +9,8 @@
         <service id="Elio\FastOrder\Controller\FastOrderController" public="true">
             <argument id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" type="service" />
             <argument id="sales_channel.product.repository" type="service"/>
-            <argument type="service" id="Shopware\Core\Content\Product\Cart\ProductLineItemFactory"/>
+            <argument id="Shopware\Core\Content\Product\Cart\ProductLineItemFactory" type="service"/>
+            <argument id="Shopware\Storefront\Page\GenericPageLoader" type="service"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -23,14 +24,6 @@
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
-        </service>
-
-        <service id="Elio\FastOrder\Resources\Snippets\en_GB\SnippetFile_en_GB">
-            <tag name="shopware.snippet.file"/>
-        </service>
-
-        <service id="Elio\FastOrder\Resources\Snippets\de_DE\SnippetFile_de_DE">
-            <tag name="shopware.snippet.file"/>
         </service>
 
     </services>

@@ -12,7 +12,6 @@
       "submitTitle": "Add to shopping list"
     },
     "flash": {
-      "warningProductNumberNotEntered": "Product number not entered",
       "successProductAddedToCart": "Product added to cart",
       "dangerProductNotFoundByNumber": "Product not found by number %number%",
       "dangerTotalCountProducts": "The total count of products must be more than %count%!"

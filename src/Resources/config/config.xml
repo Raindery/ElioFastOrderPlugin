@@ -4,5 +4,14 @@
 
     <card>
         <title>Configuration</title>
+        <title lang="de-DE">Configuration</title>
+
+        <input-field type="int">
+            <name>countFormFields</name>
+            <label>Count form fields</label>
+            <label lang="de-DE">Count form fields</label>
+            <defaultValue>5</defaultValue>
+        </input-field>
+
     </card>
 </config>
