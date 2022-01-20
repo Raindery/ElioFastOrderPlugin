@@ -3,15 +3,24 @@
 namespace Elio\FastOrder\Controller;
 
 
+use phpDocumentor\Reflection\Types\This;
+use Shopware\Core\Content\Product\ProductCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\PrefixFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Search\SearchPageLoader;
 use Shopware\Storefront\Page\Suggest\SuggestPageLoader;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @RouteScope(scopes={"storefront"})
@@ -19,55 +28,49 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FastOrderSearchController extends StorefrontController
 {
-    private SuggestPageLoader $suggestPageLoader;
-    private SearchPageLoader $searchPageLoader;
+    private SalesChannelRepositoryInterface $salesChannelRepository;
 
-    public function __construct(SuggestPageLoader $suggestPageLoader, SearchPageLoader $searchPageLoader)
+    public function __construct(SalesChannelRepositoryInterface $salesChannelRepository)
     {
-        $this->suggestPageLoader = $suggestPageLoader;
-        $this->searchPageLoader = $searchPageLoader;
+        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     /**
-     * @Route ("fast-order/suggest", name="frontend.fast-order.suggest", methods={"GET"}, defaults={"XmlHttpRequest"=true})
-     * @param SalesChannelContext $context
-     * @param Request $request
+     * @Route ("/fs-search-page", name="frontend.fast-order.search", methods={"GET"})
      * @return Response
      */
-    public function suggest(SalesChannelContext $context, Request $request):Response
+    public function show() : Response
     {
-        $page = $this->suggestPageLoader->load($request, $context);
-        return $this->renderStorefront('@ElioFastOrder/storefront/search/fast-order-search-suggest.html.twig',
-            ['page' => $page]
-        );
+        return $this->renderStorefront('@ElioFastOrder/storefront/test.html.twig');
     }
-
 
     /**
-     * @Route ("fast-order/search", name="frontend.fast-order.search", methods={"GET"})
-     * @param SalesChannelContext $context
+     * @Route ("/fast-order-test", name="frontend.fast-order.test", defaults={"XmlHttpRequest"=true}, methods={"GET"})
      * @param Request $request
-     * @return Response
+     * @param SalesChannelContext $context
+     * @return JsonResponse
      */
-    public function search(SalesChannelContext $context, Request $request) : Response
+    public function search(Request $request, SalesChannelContext $context) :Response
     {
-        try {
-            $page = $this->searchPageLoader->load($request, $context);
-            if ($page->getListing()->getTotal() === 1) {
-                $product = $page->getListing()->first();
-                if ($request->get('search') === $product->getProductNumber()) {
-                    $productId = $product->getId();
+        $productNumber = $request->query->get('searchInput');
 
-                    return $this->forwardToRoute('frontend.detail.page', [], ['productId' => $productId]);
-                }
-            }
-        } catch (MissingRequestParameterException $missingRequestParameterException) {
-            return $this->forwardToRoute('frontend.home.page');
-        }
+        $products = $this->getProductsByNumber($context, $productNumber);
 
-        return $this->renderStorefront('@Storefront/storefront/page/search/index.html.twig', ['page' => $page]);
+        return new Response('fdsfsdd');
     }
 
+    private function getProductsByNumber(SalesChannelContext $context, string $productNumber) : ?ProductCollection
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('available', '1'));
+        $criteria->addFilter(new PrefixFilter('productNumber', $productNumber));
+        $criteria->setLimit(10);
+
+        /** @var ProductCollection $products */
+        $products = $this->salesChannelRepository->search($criteria, $context)->getEntities();
+
+        return $products;
+    }
 }
 
 

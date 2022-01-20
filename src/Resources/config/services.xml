@@ -18,8 +18,7 @@
         </service>
 
         <service id="Elio\FastOrder\Controller\FastOrderSearchController" public="true">
-            <argument id="Shopware\Storefront\Page\Suggest\SuggestPageLoader" type="service"/>
-            <argument id="Shopware\Storefront\Page\Search\SearchPageLoader" type="service"/>
+            <argument id="sales_channel.product.repository" type="service"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
