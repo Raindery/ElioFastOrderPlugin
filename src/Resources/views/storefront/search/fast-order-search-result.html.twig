@@ -1,0 +1,47 @@
+{# @var product \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
+{% block fast_order_search_result %}
+        <ul class="fast-order-search-result-container">
+            {% for product in products %}
+                    <li class="fast-order-search-result-product"
+                         style="background-color: #F0F0F0; margin-bottom: .5rem; margin-top: .5rem;"
+                         data-product-number="{{ product.productNumber }}"
+                    >
+
+                        <div class="row align-items-center no-gutters">
+
+                            {% block fast_order_search_result_product_image %}
+                                <div class="col-auto fast-order-search-result-product-image">
+                                    {% sw_thumbnails 'my-thubmails' with {
+                                        media: product.cover.media,
+                                        sizes: {
+                                            'default': '50px'
+                                        }
+                                    } %}
+                                </div>
+                            {% endblock %}
+
+                            {% block fast_order_search_result_product_name %}
+                                <div class="col-auto fast-order-search-result-product-name">
+                                    <p>{{ product.translated.name }}</p>
+                                </div>
+
+                            {% endblock %}
+
+                            {% block fast_order_search_result_product_number %}
+
+                            {% endblock %}
+
+                            {% block fast_order_search_result_product_price %}
+
+                            {% endblock %}
+
+
+
+                        </div>
+
+
+
+                    </li>
+            {% endfor %}
+        </ul>
+{% endblock %}
