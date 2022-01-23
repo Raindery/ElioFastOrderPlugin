@@ -1,47 +1,94 @@
 {# @var product \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
-{% block fast_order_search_result %}
+{# @var products \Shopware\Core\Content\Product\ProductCollection #}
+
+{% block fast_order_search_result_container %}
+
         <ul class="fast-order-search-result-container">
-            {% for product in products %}
-                    <li class="fast-order-search-result-product"
-                         style="background-color: #F0F0F0; margin-bottom: .5rem; margin-top: .5rem;"
-                         data-product-number="{{ product.productNumber }}"
-                    >
+            {% if products.elements %}
 
-                        <div class="row align-items-center no-gutters">
+                {% for product in products %}
 
-                            {% block fast_order_search_result_product_image %}
-                                <div class="col-auto fast-order-search-result-product-image">
-                                    {% sw_thumbnails 'my-thubmails' with {
-                                        media: product.cover.media,
-                                        sizes: {
-                                            'default': '50px'
-                                        }
-                                    } %}
-                                </div>
-                            {% endblock %}
+                    {% block fast_order_search_result_product %}
+                        <li class="fast-order-search-result-product"
+                            data-product-number="{{ product.productNumber }}"
+                        >
+                            <div class="row align-items-center no-gutters">
 
-                            {% block fast_order_search_result_product_name %}
-                                <div class="col-auto fast-order-search-result-product-name">
-                                    <p>{{ product.translated.name }}</p>
-                                </div>
+                                {% block fast_order_search_result_product_image %}
 
-                            {% endblock %}
+                                    <div class="col-2 fast-order-search-result-product-image-container">
+                                        {% sw_thumbnails 'fast-order-search-result-product-image-thumbnails' with {
+                                            media: product.cover.media,
+                                            sizes: {
+                                                'default': '50px'
+                                            },
+                                            attributes: {
+                                                'class': 'fast-order-search-result-product-image',
+                                            }
+                                        } %}
+                                    </div>
 
-                            {% block fast_order_search_result_product_number %}
+                                {% endblock %}
 
-                            {% endblock %}
+                                {% block fast_order_search_result_product_name_and_number %}
 
-                            {% block fast_order_search_result_product_price %}
+                                    <div class="col-7">
 
-                            {% endblock %}
+                                        {% block fast_order_search_result_product_name %}
 
+                                            <div class="fast-order-search-result-product-name">
+                                                {{ product.translated.name }}
+                                            </div>
 
+                                        {% endblock %}
 
-                        </div>
+                                        {% block fast_order_search_result_product_number %}
 
+                                            <div class="fast-order-search-result-product-number">
+                                                {{ product.productNumber }}
+                                            </div>
 
+                                        {% endblock %}
 
-                    </li>
-            {% endfor %}
+                                    </div>
+
+                                {% endblock %}
+
+                                {% block fast_order_search_result_product_price %}
+
+                                    <div class="col-3 fast-order-search-result-product-price">
+                                        {% set price = product.calculatedPrice %}
+                                        {% if product.calculatedPrices.count > 0 %}
+                                            {% set price = product.calculatedPrices.last %}
+                                        {% endif %}
+
+                                        {% if product.calculatedPrices.count > 1 %}
+                                            {{ "elio_fast_order.search-result.textFrom"|trans|sw_sanitize }}
+                                        {% endif %}
+
+                                        {{ price.unitPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                                    </div>
+
+                                {% endblock %}
+
+                            </div>
+                        </li>
+                    {% endblock %}
+
+                {% endfor %}
+
+            {% else %}
+
+                {% block fast_order_search_result_not_found %}
+
+                    <div class="fast-order-search-result-not-found">
+                        {{ "elio_fast_order.search-result.textNotFound"|trans|sw_sanitize }}
+                    </div>
+
+                {% endblock %}
+
+            {% endif %}
+
         </ul>
+
 {% endblock %}
