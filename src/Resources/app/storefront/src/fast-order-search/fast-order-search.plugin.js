@@ -12,7 +12,7 @@ export default class FastOrderSearch extends Plugin {
     static options = {
         fastOrderSearchInputId: 'search-input',
         fastOrderSearchResultContainerId: 'search-result',
-        fastOrderSearchControllerFunctionRoute: '/fast-order-test',
+        fastOrderSearchControllerFunctionRoute: '/fast-order-search-products',
         fastOrderSearchQueryVariable: 'searchInput',
         fastOrderSearchProductsBlocksClass: 'fast-order-search-result-product',
         fastOrderSearchProductNumberDataAttributeName: 'data-product-number',

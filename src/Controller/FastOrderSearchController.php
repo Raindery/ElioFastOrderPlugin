@@ -3,7 +3,6 @@
 namespace Elio\FastOrder\Controller;
 
 use Shopware\Core\Content\Product\ProductCollection;
-use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\PrefixFilter;
@@ -11,18 +10,13 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
-use Shopware\Storefront\Page\Suggest\SuggestPageLoader;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use function MongoDB\BSON\toJSON;
-
 /**
  * @RouteScope(scopes={"storefront"})
  */
-
 class FastOrderSearchController extends StorefrontController
 {
     private SalesChannelRepositoryInterface $salesChannelRepository;
@@ -33,18 +27,7 @@ class FastOrderSearchController extends StorefrontController
     }
 
     /**
-     * @Route ("/fs-search-page", name="frontend.fast-order.search", methods={"GET"})
-     * @return Response
-     */
-    public function show() : Response
-    {
-        return $this->renderStorefront('@ElioFastOrder/storefront/test.html.twig', [
-            'products' => ''
-        ]);
-    }
-
-    /**
-     * @Route ("/fast-order-test", name="frontend.fast-order.test", defaults={"XmlHttpRequest"=true}, methods={"GET"})
+     * @Route ("/fast-order-search-products", name="frontend.fast-order.search", defaults={"XmlHttpRequest"=true}, methods={"GET"})
      * @param Request $request
      * @param SalesChannelContext $context
      * @return Response
@@ -52,16 +35,8 @@ class FastOrderSearchController extends StorefrontController
     public function search(Request $request, SalesChannelContext $context) :Response
     {
         $productNumber = $request->query->get('searchInput');
-
-        /**
-         * @var ProductCollection $products
-         */
+        /*** @var ProductCollection $products */
         $products = $this->getProductsByNumber($context, $productNumber);
-
-        $list = array();
-        foreach ($products as $p){
-            $list[] = array('name'=> $p->getName(), 'productNumber'=>$p->getProductNumber());
-        }
 
         return $this->renderStorefront('@ElioFastOrder/storefront/search/fast-order-search-result.html.twig', ['products' => $products]);
     }
@@ -71,7 +46,7 @@ class FastOrderSearchController extends StorefrontController
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('available', '1'));
         $criteria->addFilter(new PrefixFilter('productNumber', $productNumber));
-        $criteria->setLimit(10);
+        $criteria->setLimit(30);
 
         /** @var ProductCollection $products */
         $products = $this->salesChannelRepository->search($criteria, $context)->getEntities();
