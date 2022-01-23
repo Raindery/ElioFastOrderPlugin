@@ -3,7 +3,7 @@
 {% block base_main %}
 
     {% block fast_order_form_container %}
-        <div class="d-flex justify-content-center">
+        <div class="fast-order-form-container d-flex justify-content-center">
             <div class="card col-8">
 
                 {% block base_flashbags %}
@@ -16,7 +16,7 @@
                         {% block fast_order_form_header_menu_buttons %}
                             <div class="card-group">
                                 {% block fast_order_form_header_menu_button_enter_articles %}
-                                    <button class="btn header-actions-btn" type="button" data-offcanvas-account-menu="true" style="padding-left: 0">
+                                    <button class="fast-order-form-header-menu-button-enter-articles btn header-actions-btn" type="button" data-offcanvas-account-menu="true">
                                         {% sw_icon 'paper-pencil' style{
                                             'pack':'default'
                                         } %}
@@ -36,7 +36,7 @@
                 {% endblock %}
 
                 {% block fast_order_form_body %}
-                    <div class="card-body" style="padding: .75rem 1.25rem;">
+                    <div class="fast-order-form-body card-body">
                         <div class="container">
                             {% block fast_order_form_titles %}
                                 <div class="row align-items-start">

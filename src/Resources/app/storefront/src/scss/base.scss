@@ -1,3 +1,6 @@
+.fast-order-form-container{
+  margin-top: 5rem;
+}
 .ctm-input-field>label{
   display: none;
 }
@@ -10,12 +13,20 @@
   padding: 1rem 0;
 }
 
+.fast-order-form-body{
+  padding: .75rem 1.25rem;
+}
+
 .fast-order-col-right{
   padding-right: 0;
 }
 
 .fast-order-col-left{
   padding-left: 0;
+}
+
+.fast-order-form-header-menu-button-enter-articles{
+  padding-left: 0
 }
 
 // Inputs row
