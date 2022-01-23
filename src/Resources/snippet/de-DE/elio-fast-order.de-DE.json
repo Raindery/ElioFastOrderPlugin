@@ -15,6 +15,11 @@
       "successProductAddedToCart": "Product added to cart",
       "dangerProductNotFoundByNumber": "Product not found by number %number%",
       "dangerTotalCountProducts": "The total count of products must be more than %count%!"
+    },
+
+    "search-result": {
+      "textFrom": "From",
+      "textNotFound": "Products not found"
     }
   }
 }
