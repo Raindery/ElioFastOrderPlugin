@@ -12,23 +12,30 @@
 
                 {% block fast_order_form_header %}
                     <div class="card-header fast-order-card-header">
-                        <div class="card-group">
-                            {% block fast_order_form_header_menu_button_enter_articles %}
-                                <button class="btn header-actions-btn" type="button" data-offcanvas-account-menu="true" style="padding-left: 0">
-                                    {% sw_icon 'paper-pencil' style{
-                                        'pack':'default'
-                                    } %}
-                                    {{ 'elio_fast_order.form.headerButtonEnterArticles'|trans }}
-                                </button>
-                            {% endblock %}
-                        </div>
-                        <p class="card-text fast-order-form-description">
-                            {{ 'elio_fast_order.form.description'|trans }}
-                        </p>
+
+                        {% block fast_order_form_header_menu_buttons %}
+                            <div class="card-group">
+                                {% block fast_order_form_header_menu_button_enter_articles %}
+                                    <button class="btn header-actions-btn" type="button" data-offcanvas-account-menu="true" style="padding-left: 0">
+                                        {% sw_icon 'paper-pencil' style{
+                                            'pack':'default'
+                                        } %}
+                                        {{ 'elio_fast_order.form.headerButtonEnterArticles'|trans }}
+                                    </button>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+
+                        {% block fast_order_form_description %}
+                            <p class="card-text fast-order-form-description">
+                                {{ 'elio_fast_order.form.description'|trans }}
+                            </p>
+                        {% endblock %}
+
                     </div>
                 {% endblock %}
 
-                {% block fast_order_from_body %}
+                {% block fast_order_form_body %}
                     <div class="card-body" style="padding: .75rem 1.25rem;">
                         <div class="container">
                             {% block fast_order_form_titles %}
@@ -48,19 +55,22 @@
                             {% endblock %}
 
                             {% block fast_order_form %}
+
                                 <form action="{{ path('storefront.fast-order.add-to-card') }}"
                                       method="post"
                                       data-form-csrf-handler="true" >
 
                                     {% block fast_order_form_input_fields %}
-                                        {% set countFormFields = config('ElioFastOrder.config.countFormFields') %}
 
+                                        {% set countFormFields = config('ElioFastOrder.config.countFormFields') %}
                                         {% for i in 0..countFormFields - 1 %}
+
                                             {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
-                                                with{ fastOrderProductId:i, extraClass:"fast-order-input-field" }
+                                                with{ fastOrderProductId:i }
                                             %}
 
                                             {% if i == 0 %}
+
                                                 {% block fast_order_form_main_product_amount %}
                                                     <div class="row" style="padding: .3rem 0;">
                                                         <div class="col-7 fast-order-col-left">
@@ -76,27 +86,34 @@
                                                         </div>
                                                     </div>
                                                 {% endblock %}
+
                                             {% endif %}
 
-
                                         {% endfor %}
+
                                     {% endblock %}
 
                                     {% block fast_order_total_amount %}
-                                    <div class="row d-flex align-content-end justify-content-end">
-                                        <p class="mr-2 mb-0">{{ 'elio_fast_order.form.totalAmount'|trans }}</p>
-                                        <h4 class="mb-0"><span>{{ 0|format_currency(context.currency.isoCode) }}</span></h4>
-                                    </div>
+
+                                        <div class="row d-flex align-content-end justify-content-end">
+                                            <p class="mr-2 mb-0">{{ 'elio_fast_order.form.totalAmount'|trans }}</p>
+                                            <h4 class="mb-0"><span>{{ 0|format_currency(context.currency.isoCode) }}</span></h4>
+                                        </div>
+
                                     {% endblock %}
 
                                     {% block fast_order_submit_button %}
+
                                         <div class="row align-items-start fast-order-input-submit">
                                             <button class="btn btn-primary" type="submit" >{{ 'elio_fast_order.form.submitTitle'|trans }}</button>
                                         </div>
+
                                     {% endblock %}
 
                                     {{ sw_csrf('storefront.fast-order.add-to-card') }}
+
                                 </form>
+
                             {% endblock %}
                         </div>
                     </div>
@@ -105,4 +122,5 @@
             </div>
         </div>
     {% endblock %}
+
 {% endblock %}

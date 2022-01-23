@@ -18,8 +18,17 @@
   padding-left: 0;
 }
 
-.fast-order-from-input-row{
-  padding: .2rem 0;
+// Inputs row
+.fast-order-form-inputs-row{
+  padding: .5rem 0;
+}
+
+.fast-order-form-inputs-row-number-field{
+  padding-left: 0;
+}
+
+.fast-order-form-inputs-row-select-quantity{
+  padding-right: 0;
 }
 
 .fast-order-input-submit{
