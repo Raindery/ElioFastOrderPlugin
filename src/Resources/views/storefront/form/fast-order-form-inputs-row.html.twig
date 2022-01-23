@@ -1,19 +1,18 @@
-{% block fast_order_form_inputs_row %}
-    <div class="row align-items-start {{ extraClass }}">
-        <div class="col-7" style="padding-left: 0">
-            <label style="width: 100%">
+{% block fast_order_form_input_row %}
+    <div class="fast-order-from-input-row row align-items-start">
+        <div data-fast-order-search class="fast-order-input-field col-7" style="padding-left: 0">
+            <input id="search-input"
+                   type="text"
+                   name="productData[{{ fastOrderProductId }}][productNumber]"
+                   value="{{ data.get( 'productData[{{ productId }}][productNumber]' ) }}"
+                   placeholder="{{'elio_fast_order.form.fieldPlaceholderInColLeft' |trans }}"
+                   required="required"
+                   class="form-control"
+                   autocomplete="off"
+            >
 
+            <div id="search-result"></div>
 
-                <input
-                       type="text"
-                       name="productData[{{ fastOrderProductId }}][productNumber]"
-                       value="{{ data.get( 'productData[{{ productId }}][productNumber]' ) }}"
-                       placeholder="{{'elio_fast_order.form.fieldPlaceholderInColLeft' |trans }}"
-                       required="required"
-                       class="form-control"
-                >
-
-            </label>
         </div>
 
         <div class="col-5" style="padding-right: 0; width: 100%">
@@ -31,6 +30,4 @@
         </div>
 
     </div>
-
-
 {% endblock %}
