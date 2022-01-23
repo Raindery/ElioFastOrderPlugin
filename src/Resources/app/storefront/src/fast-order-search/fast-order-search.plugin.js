@@ -22,7 +22,9 @@ export default class FastOrderSearch extends Plugin {
 
     init() {
         this.inputEventClick = (DeviceDetection.isTouchDevice()) ? 'touchstart' : 'click';
+
         this._client = new HttpClient();
+        this.searchUrl = this.options.fastOrderSearchControllerFunctionRoute + '?' + this.options.fastOrderSearchQueryVariable + '=';
 
         this.input = this.el.children[this.options.fastOrderSearchInputId];
         this.searchResult = this.el.children[this.options.fastOrderSearchResultContainerId];
@@ -62,9 +64,7 @@ export default class FastOrderSearch extends Plugin {
      */
     _fetch() {
         let inputTerm = this.input.value.trim();
-        let url = this.options.fastOrderSearchControllerFunctionRoute + '?' + this.options.fastOrderSearchQueryVariable +'=' + inputTerm;
-
-        this._client.get(url, this._setContent.bind(this));
+        this._client.get(this.searchUrl+inputTerm, this._setContent.bind(this));
     }
 
     /**
@@ -84,15 +84,15 @@ export default class FastOrderSearch extends Plugin {
      * @private
      */
     _registerEventsToSearchResult(){
+
         // register events to product blocks for fill the input with product number
         let productsBlocks = this.searchResult.getElementsByClassName(this.options.fastOrderSearchProductsBlocksClass);
+
         for(let i = 0; i<productsBlocks.length; i++){
-
             let productNumber = productsBlocks[i].getAttribute(this.options.fastOrderSearchProductNumberDataAttributeName);
-
-            productsBlocks[i].addEventListener(this.inputEventClick, ()=>{
+            productsBlocks[i].addEventListener(this.inputEventClick, () => {
                 this.input.value = productNumber;
-            })
+            });
         }
     }
 
