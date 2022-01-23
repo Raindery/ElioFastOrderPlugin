@@ -20,6 +20,8 @@ export default class FastOrderSearch extends Plugin {
      * @private
      */
     _registerEvents() {
+
+        // on input fetch
         this.input.addEventListener(
             'input',
             Debouncer.debounce(this._fetch.bind(this), 250),
@@ -29,6 +31,14 @@ export default class FastOrderSearch extends Plugin {
             },
             );
 
+        // on focus fetch
+        this.input.addEventListener('focus', ()=>{
+            if(this.input.value !== ''){
+                this._fetch();
+            }
+        })
+
+        // event click on body for hide search result
         document.body.addEventListener(this.inputEventClick, this._onBodyClick.bind(this));
     }
 
@@ -49,7 +59,7 @@ export default class FastOrderSearch extends Plugin {
      * @private
      */
     _setContent(data) {
-        this.searchResult.innerHTML = '';
+        this._clearSearchResult();
         this.searchResult.insertAdjacentHTML('beforeend', data);
 
         this._registerEventsToSearchResult();
@@ -72,7 +82,22 @@ export default class FastOrderSearch extends Plugin {
         }
     }
 
+    //actions
+    _onProductClick(){
+
+    }
+
+    /**
+     * @private
+     */
     _onBodyClick(){
+        this._clearSearchResult();
+    }
+
+    /**
+     * @private
+     */
+    _clearSearchResult(){
         this.searchResult.innerHTML = '';
     }
 }
