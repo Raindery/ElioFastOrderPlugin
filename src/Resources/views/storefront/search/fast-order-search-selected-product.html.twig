@@ -47,7 +47,7 @@
 
             {% block fast_order_search_selected_product_price %}
 
-                <div class="col-3 fast-order-search-selected-product-price">
+                <div class="fast-order-search-selected-product-price col-3">
                     {% set price = selectedProduct.calculatedPrice %}
                     {% if selectedProduct.calculatedPrices.count > 0 %}
                         {% set price = selectedProduct.calculatedPrices.last %}
@@ -64,7 +64,9 @@
 
             {% block fast_order_search_selected_product_deselect %}
                 <div class="fast-order-search-selected-product-deselect col-1">
-                    Deselect
+                        {% sw_icon 'x' style{
+                            'pack':'default'
+                        } %}
                 </div>
             {% endblock %}
 

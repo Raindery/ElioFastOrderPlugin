@@ -149,7 +149,28 @@
 
 .fast-order-search-selected-product-price{
   height: 100%;
+
   display: flex;
   align-items: center;
-  text-align: right;
+  justify-content: center;
+}
+
+.fast-order-search-selected-product-deselect{
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fast-order-search-selected-product-deselect span{
+  cursor: pointer;
+}
+
+.fast-order-search-selected-product-deselect span svg{
+  position: inherit;
+}
+
+.fast-order-search-selected-product-deselect span:hover{
+  color: #008490;
 }
