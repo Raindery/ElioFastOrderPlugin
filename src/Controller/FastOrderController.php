@@ -88,7 +88,7 @@ class FastOrderController extends StorefrontController
         $this->cartService->add($cart, $products, $context);
 
         $this->addFlash(self::SUCCESS, $this->trans('elio_fast_order.flash.successProductAddedToCart'));
-        return $this->redirectToRoute('frontend.checkout.cart.page');
+        return $this->forwardToRoute('frontend.checkout.cart.page');
     }
 
     /**

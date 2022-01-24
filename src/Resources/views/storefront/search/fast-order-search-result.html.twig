@@ -8,73 +8,74 @@
 
                 {% for product in products %}
 
-                    {% block fast_order_search_result_product %}
+                        {% block fast_order_search_result_product %}
 
-                        <li class="fast-order-search-result-product"
-                            data-product-number="{{ product.productNumber }}"
-                        >
-                            <div class="row align-items-center no-gutters">
+                            <div class="fast-order-search-result-product"
+                                data-product-number="{{ product.productNumber }}"
+                            >
+                                <div class="row align-items-center no-gutters">
 
-                                {% block fast_order_search_result_product_image %}
+                                    {% block fast_order_search_result_product_image %}
 
-                                    <div class="col-2 fast-order-search-result-product-image-container">
-                                        {% sw_thumbnails 'fast-order-search-result-product-image-thumbnails' with {
-                                            media: product.cover.media,
-                                            sizes: {
-                                                'default': '50px'
-                                            },
-                                            attributes: {
-                                                'class': 'fast-order-search-result-product-image',
-                                            }
-                                        } %}
-                                    </div>
+                                        <div class="col-2 fast-order-search-result-product-image-container">
+                                            {% sw_thumbnails 'fast-order-search-result-product-image-thumbnails' with {
+                                                media: product.cover.media,
+                                                sizes: {
+                                                    'default': '50px'
+                                                },
+                                                attributes: {
+                                                    'class': 'fast-order-search-result-product-image',
+                                                }
+                                            } %}
+                                        </div>
 
-                                {% endblock %}
+                                    {% endblock %}
 
-                                {% block fast_order_search_result_product_name_and_number %}
+                                    {% block fast_order_search_result_product_name_and_number %}
 
-                                    <div class="col-7">
+                                        <div class="col-7">
 
-                                        {% block fast_order_search_result_product_name %}
+                                            {% block fast_order_search_result_product_name %}
 
-                                            <div class="fast-order-search-result-product-name">
-                                                {{ product.translated.name }}
-                                            </div>
+                                                <div class="fast-order-search-result-product-name">
+                                                    {{ product.translated.name }}
+                                                </div>
 
-                                        {% endblock %}
+                                            {% endblock %}
 
-                                        {% block fast_order_search_result_product_number %}
+                                            {% block fast_order_search_result_product_number %}
 
-                                            <div class="fast-order-search-result-product-number">
-                                                {{ product.productNumber }}
-                                            </div>
+                                                <div class="fast-order-search-result-product-number">
+                                                    {{ product.productNumber }}
+                                                </div>
 
-                                        {% endblock %}
+                                            {% endblock %}
 
-                                    </div>
+                                        </div>
 
-                                {% endblock %}
+                                    {% endblock %}
 
-                                {% block fast_order_search_result_product_price %}
+                                    {% block fast_order_search_result_product_price %}
 
-                                    <div class="col-3 fast-order-search-result-product-price">
-                                        {% set price = product.calculatedPrice %}
-                                        {% if product.calculatedPrices.count > 0 %}
-                                            {% set price = product.calculatedPrices.last %}
-                                        {% endif %}
+                                        <div class="col-3 fast-order-search-result-product-price">
+                                            {% set price = product.calculatedPrice %}
+                                            {% if product.calculatedPrices.count > 0 %}
+                                                {% set price = product.calculatedPrices.last %}
+                                            {% endif %}
 
-                                        {% if product.calculatedPrices.count > 1 %}
-                                            {{ "elio_fast_order.search-result.textFrom"|trans|sw_sanitize }}
-                                        {% endif %}
+                                            {% if product.calculatedPrices.count > 1 %}
+                                                {{ "elio_fast_order.search-result.textFrom"|trans|sw_sanitize }}
+                                            {% endif %}
 
-                                        {{ price.unitPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
-                                    </div>
+                                            {{ price.unitPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                                        </div>
 
-                                {% endblock %}
+                                    {% endblock %}
+
+                                </div>
 
                             </div>
-                        </li>
-                    {% endblock %}
+                        {% endblock %}
 
                 {% endfor %}
 

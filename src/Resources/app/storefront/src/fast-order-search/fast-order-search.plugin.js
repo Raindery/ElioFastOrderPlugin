@@ -64,7 +64,7 @@ export default class FastOrderSearch extends Plugin {
      */
     _fetch() {
         let inputTerm = this.input.value.trim();
-        this._client.get(this.searchUrl+inputTerm, this._setContent.bind(this));
+        this._client.get(this.searchUrl + inputTerm, this._setContent.bind(this));
     }
 
     /**
@@ -91,7 +91,7 @@ export default class FastOrderSearch extends Plugin {
         for(let i = 0; i<productsBlocks.length; i++){
             let productNumber = productsBlocks[i].getAttribute(this.options.fastOrderSearchProductNumberDataAttributeName);
             productsBlocks[i].addEventListener(this.inputEventClick, () => {
-                this.input.value = productNumber;
+                this._onProductSelect(productNumber);
             });
         }
     }
@@ -101,6 +101,16 @@ export default class FastOrderSearch extends Plugin {
      */
     _onBodyClick(){
         this._clearSearchResult();
+    }
+
+    _onProductSelect(productNumber){
+        this.input.value = productNumber;
+        this._client.get('/fast-order-search-products/select-product/'+productNumber, this._setSelectedProduct.bind(this));
+    }
+
+    _setSelectedProduct(data){
+        this.input.type = 'hidden';
+        this.el.insertAdjacentHTML('beforeend', data);
     }
 
     /**

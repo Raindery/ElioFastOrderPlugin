@@ -41,6 +41,19 @@ class FastOrderSearchController extends StorefrontController
         return $this->renderStorefront('@ElioFastOrder/storefront/search/fast-order-search-result.html.twig', ['products' => $products]);
     }
 
+    /**
+     * @Route ("/fast-order-search-products/select-product/{productNumber}", name="frontend.fast-order.select-product", defaults={"XmlHttpRequest"=true}, methods={"GET"})
+     * @param Request $request
+     * @return Response
+     */
+    public function productSelect(Request $request, SalesChannelContext $context, string $productNumber) : Response
+    {
+        $selectedProduct = $this->getProductsByNumber($context, $productNumber)->first();
+        return new Response($this->renderView('@ElioFastOrder/storefront/search/fast-order-search-selected-product.html.twig', [
+            'selectedProduct'=>$selectedProduct
+        ]));
+    }
+
     private function getProductsByNumber(SalesChannelContext $context, string $productNumber) : ?ProductCollection
     {
         $criteria = new Criteria();

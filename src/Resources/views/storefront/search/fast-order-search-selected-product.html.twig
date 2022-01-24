@@ -1,0 +1,76 @@
+{# @var selectedProduct \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
+{% block fast_order_search_selected_product %}
+
+    {% block fast_order_selected_product_container %}
+
+        <div class="row align-items-center no-gutters">
+
+            {% block fast_order_search_selected_product_image %}
+
+                <div class="col-2 fast-order-search-selected-product-image-container">
+                    {% sw_thumbnails 'fast-order-search-result-product-image-thumbnails' with {
+                        media: selectedProduct.cover.media,
+                        sizes: {
+                            'default': '50px'
+                        },
+                        attributes: {
+                            'class': 'fast-order-search-selected-product-image',
+                        }
+                    } %}
+                </div>
+
+            {% endblock %}
+
+            {% block fast_order_search_selected_product_name_and_numaber %}
+
+                <div class="col-6">
+
+                    {% block fast_order_search_selected_product_name %}
+
+                        <div class="fast-order-search-selected-product-name">
+                            {{ selectedProduct.translated.name }}
+                        </div>
+
+                    {% endblock %}
+
+                    {% block fast_order_search_selected_product_number %}
+
+                        <div class="fast-order-search-selected-product-number">
+                            {{ selectedProduct.productNumber }}
+                        </div>
+
+                    {% endblock %}
+
+                </div>
+
+            {% endblock %}
+
+            {% block fast_order_search_selected_product_price %}
+
+                <div class="col-3 fast-order-search-selected-product-price">
+                    {% set price = selectedProduct.calculatedPrice %}
+                    {% if selectedProduct.calculatedPrices.count > 0 %}
+                        {% set price = selectedProduct.calculatedPrices.last %}
+                    {% endif %}
+
+                    {% if selectedProduct.calculatedPrices.count > 1 %}
+                        {{ "elio_fast_order.search-result.textFrom"|trans|sw_sanitize }}
+                    {% endif %}
+
+                    {{ price.unitPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                </div>
+
+            {% endblock %}
+
+            {% block fast_order_search_selected_product_deselect %}
+                <div class="fast-order-search-selected-product-deselect col-1">
+                    Deselect
+                </div>
+            {% endblock %}
+
+        </div>
+
+    {% endblock %}
+
+
+{% endblock %}
