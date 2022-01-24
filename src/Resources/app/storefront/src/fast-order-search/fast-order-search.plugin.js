@@ -2,6 +2,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 import HttpClient from 'src/service/http-client.service';
 import Debouncer from 'src/helper/debouncer.helper';
 import DeviceDetection from 'src/helper/device-detection.helper';
+import DomAccess from 'src/helper/dom-access.helper';
 
 export default class FastOrderSearch extends Plugin {
 
@@ -17,6 +18,7 @@ export default class FastOrderSearch extends Plugin {
         fastOrderSearchProductsBlocksClass: 'fast-order-search-result-product',
         fastOrderSearchProductNumberDataAttributeName: 'data-product-number',
 
+        fastOrderSearchSelectedProductClassName: 'fast-order-search-selected-product',
         fastOrderSearchActionDelay: 250,
     }
 
@@ -28,6 +30,7 @@ export default class FastOrderSearch extends Plugin {
 
         this.input = this.el.children[this.options.fastOrderSearchInputId];
         this.searchResult = this.el.children[this.options.fastOrderSearchResultContainerId];
+
         this._registerEvents();
     }
 
@@ -59,7 +62,6 @@ export default class FastOrderSearch extends Plugin {
     }
 
     /**
-     *
      * @private
      */
     _fetch() {
@@ -105,12 +107,31 @@ export default class FastOrderSearch extends Plugin {
 
     _onProductSelect(productNumber){
         this.input.value = productNumber;
-        this._client.get('/fast-order-search-products/select-product/'+productNumber, this._setSelectedProduct.bind(this));
+        this._client.get('/fast-order-search-products/select-product/' + productNumber, this._setSelectedProduct.bind(this));
+    }
+
+    /**
+     *
+     * @param {Element} selectedProductContainer
+     * @private
+     */
+    _onProductDeselect(selectedProductContainer){
+        this.input.type = 'input';
+
+        selectedProductContainer.remove();
     }
 
     _setSelectedProduct(data){
         this.input.type = 'hidden';
-        this.el.insertAdjacentHTML('beforeend', data);
+
+        let selectedProductContainer = document.createElement('div');
+        selectedProductContainer.className = this.options.fastOrderSearchSelectedProductClassName;
+        selectedProductContainer.insertAdjacentHTML('beforeend', data);
+
+        this.el.insertAdjacentElement('beforeend', selectedProductContainer);
+
+        let deselectButton = DomAccess.querySelector(selectedProductContainer, '.fast-order-search-selected-product-deselect-button');
+        deselectButton.addEventListener(this.inputEventClick, this._onProductDeselect.bind(this, selectedProductContainer));
     }
 
     /**

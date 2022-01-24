@@ -1,7 +1,6 @@
 {# @var selectedProduct \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
-{% block fast_order_search_selected_product %}
 
-    {% block fast_order_selected_product_container %}
+{% block fast_order_search_selected_product %}
 
         <div class="row align-items-center no-gutters">
 
@@ -63,16 +62,17 @@
             {% endblock %}
 
             {% block fast_order_search_selected_product_deselect %}
+
                 <div class="fast-order-search-selected-product-deselect col-1">
+                    <button class="fast-order-search-selected-product-deselect-button btn header-actions-btn" type="button">
                         {% sw_icon 'x' style{
-                            'pack':'default'
+                            'pack':'default',
                         } %}
+                    </button>
                 </div>
+
             {% endblock %}
 
         </div>
-
-    {% endblock %}
-
 
 {% endblock %}
