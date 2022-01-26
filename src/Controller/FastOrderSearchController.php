@@ -50,7 +50,8 @@ class FastOrderSearchController extends StorefrontController
     {
         $selectedProduct = $this->getProductsByNumber($context, $productNumber)->first();
         return new Response($this->renderView('@ElioFastOrder/storefront/search/fast-order-search-selected-product.html.twig', [
-            'selectedProduct'=>$selectedProduct
+            'selectedProduct'=>$selectedProduct,
+
         ]));
     }
 

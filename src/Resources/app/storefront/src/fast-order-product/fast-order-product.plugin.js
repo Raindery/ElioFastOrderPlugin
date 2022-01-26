@@ -8,26 +8,25 @@ export default class FastOrderProduct extends Plugin{
     init(){
         this.fastOrderPlugin = window.PluginManager
             .getPluginInstanceFromElement(document.querySelector('[data-fast-order]'), 'FastOrder');
-        this.fastOrderPlugin.fastOrderProductPlugin.push(this);
+        this.fastOrderPlugin.fastOrderProductPlugins.push(this);
 
         this._client = new HttpClient();
-
         this._selectedProductNumber = null;
-        this._calculatedPrice = 0;
+        this._productPriceText = this.el.nextElementSibling.querySelector('.fast-order-main-product-total-price');
 
         this.productNumberField = DomAccess.querySelector(this.el, '.fast-order-form-product-number-field');
         this.quantityField = DomAccess.querySelector(this.el, '.fast-order-form-product-quantity-field');
 
-
         this._registerEvents();
-    }
-
-    get calculatedPrice(){
-        return this._calculatedPrice;
     }
 
     get selectedProductNumber(){
         return this._selectedProductNumber;
+    }
+
+    _registerEvents(){
+        this.quantityField.addEventListener('change', this._onChangeQuantity.bind(this));
+
     }
 
     onSelectProduct(productNumber){
@@ -35,45 +34,39 @@ export default class FastOrderProduct extends Plugin{
 
         if(this._selectedProductNumber !== null){
             this._calculate();
+            this.fastOrderPlugin.calculateTotalAmount();
         }
     }
 
     onDeselectProduct(){
         this._selectedProductNumber = null;
-        this._calculatedPrice = 0;
-    }
 
+        this._client.get('/fast-order/reset-price', (response) =>{
 
+            if(this._productPriceText != null){
+                this._productPriceText.innerHTML = response;
+            }
 
-
-
-
-    _registerEvents(){
-        this.quantityField.addEventListener('change', this._onChangeQuantity.bind(this));
-        this.$emitter.subscribe('setCalculatedPrice', this._onSetCalculatedPrice.bind(this));
-    }
-
-    _onSetCalculatedPrice(){
-        console.log(this.calculatedPrice);
-    }
-
-    _onChangeQuantity(){
-        if(this._selectedProductNumber !== null){
-            this._calculate();
-        }
+            this.fastOrderPlugin.calculateTotalAmount();
+        })
     }
 
     _calculate(){
         let productNumber = this.productNumberField.value;
         let productQuantity = this.quantityField.value;
-        let calculateUrl = '/fast-order/change-quantity/' + productNumber + '/' + productQuantity;
+        let calculateUrl = '/fast-order/calculate-product-price/' + productNumber + '/' + productQuantity;
 
-        this._client.get(calculateUrl, this._setCalculatedPrice.bind(this), 'application/json', true);
+        this._client.get(calculateUrl, (response) => {
+            if(this._productPriceText !== null){
+                this._productPriceText.innerHTML =  response;
+            }
+        });
     }
 
-    _setCalculatedPrice(data){
-        this._calculatedPrice = JSON.parse(data).jsonCalculatedPrice;
-        this.$emitter.publish('setCalculatedPrice');
-        this.fastOrderPlugin.calculateTotalAmount();
+    _onChangeQuantity(){
+        if(this._selectedProductNumber !== null){
+            this._calculate();
+            this.fastOrderPlugin.calculateTotalAmount();
+        }
     }
 }

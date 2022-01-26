@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 
 use Shopware\Storefront\Page\GenericPageLoaderInterface;
@@ -30,20 +31,24 @@ class FastOrderController extends StorefrontController
     private SalesChannelRepositoryInterface $productsRepository;
     private ProductLineItemFactory $productLineItemFactory;
     private GenericPageLoaderInterface $genericPageLoader;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(CartService $cartService,
         SalesChannelRepositoryInterface $productsRepository,
         ProductLineItemFactory $productLineItemFactory,
-        GenericPageLoaderInterface $genericPageLoader)
+        GenericPageLoaderInterface $genericPageLoader,
+        SystemConfigService $systemConfigService
+    )
     {
         $this->cartService = $cartService;
         $this->productsRepository = $productsRepository;
         $this->productLineItemFactory = $productLineItemFactory;
         $this->genericPageLoader = $genericPageLoader;
+        $this->systemConfigService = $systemConfigService;
     }
 
     /**
-     * @Route ("/fast-order", name="storefront.fast-order", methods={"GET"})
+     * @Route ("/fast-order", name="storefront.fast-order.page", methods={"GET"})
      * @param Request $request
      * @param SalesChannelContext $context
      * @return Response
@@ -51,6 +56,7 @@ class FastOrderController extends StorefrontController
     public function showFastOrderForm(Request $request, SalesChannelContext $context) : Response
     {
         $page = $this->genericPageLoader->load($request, $context);
+
         return $this->renderStorefront('@ElioFastOrder/storefront/form/fast-order.html.twig', [
             'page'=> $page
         ]);
@@ -70,7 +76,7 @@ class FastOrderController extends StorefrontController
             throw new MissingRequestParameterException('productData');
         }
         if(!$this->isProductsDataValidate($productsData, $context)){
-            return $this->redirectToRoute('storefront.fast-order');
+            return $this->redirectToRoute('storefront.fast-order.page');
         }
 
         /** @var LineItem[] $products */
@@ -94,25 +100,70 @@ class FastOrderController extends StorefrontController
     }
 
     /**
-     * @Route("/fast-order/change-quantity/{productNumber}/{productQuantity}", name="storefront.fast-order.change-quantity", defaults={"XmlHttpRequest"=true}, methods={"GET"})
-     * @param Request $request
+     * @Route("/fast-order/calculate-product-price/{productNumber}/{productQuantity}", name="storefront.fast-order.change-quantity", defaults={"XmlHttpRequest"=true}, methods={"GET"})
      * @param SalesChannelContext $context
      * @param string $productNumber
      * @param int $productQuantity
-     * @return JsonResponse
+     * @return Response
      */
-    public function changeQuantity(
-        Request $request,
-        SalesChannelContext $context,
-        string $productNumber,
-        int $productQuantity
-    ) : JsonResponse
+    public function calculateProductPrice(SalesChannelContext $context, string $productNumber, int $productQuantity) : Response
     {
         $product = $this->getProductByProductNumber($context, $productNumber);
 
         $calculatedPrice = ($product->getCalculatedPrices()->last()->getUnitPrice() * $productQuantity);
 
-        return new JsonResponse(['jsonCalculatedPrice'=>$calculatedPrice]);
+        return new Response($this->renderView('@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig', [
+            'calculatedPrice' => $calculatedPrice
+        ]));
+    }
+
+    /**
+     * @Route("/fast-order/calculate-total-amount", name="storefront.fast-order.calculate-total-amount", defaults={"XmlHttpRequest"=true}, methods={"GET"})
+     * @param Request $request
+     * @param SalesChannelContext $context
+     * @return Response
+     */
+    public function calculateTotalAmount(Request $request, SalesChannelContext $context) : Response
+    {
+        /**
+         * @var array $productNumbers
+         */
+        $productNumbers = $request->query->get('productNumbers');
+        /**
+         * @var array $productQuantities
+         */
+        $productQuantities = $request->query->get('productQuantities');
+        $productNumbersCount = count($productNumbers);
+
+        if(!$productNumbers){
+            throw new MissingRequestParameterException('productNumbers');
+        }
+        if(!$productQuantities){
+            throw new MissingRequestParameterException('productQuantities');
+        }
+
+        $totalAmount = 0;
+
+        if($productNumbersCount == count($productQuantities)){
+
+            for($i = 0; $i < $productNumbersCount; $i++ ){
+                $product = $this->getProductByProductNumber($context, $productNumbers[$i]);
+                $totalAmount += ($product->getCalculatedPrices()->last()->getUnitPrice() * $productQuantities[$i]);
+            }
+        }
+
+        return new Response($this->renderView('@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig', [
+            'calculatedPrice' => $totalAmount
+        ]));
+    }
+
+    /**
+     * @Route ("fast-order/reset-price", name="storefront.fast-order.reset-price", defaults={"XmlHttpRequest"=true}, methods={"GET"})
+     * @return Response
+     */
+    public function resetPrice() : Response
+    {
+        return new Response($this->renderView('@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig'));
     }
 
     /**
@@ -169,8 +220,9 @@ class FastOrderController extends StorefrontController
             return false;
         }
 
-        if($productsCount < 10){
-            $this->addFlash(self::DANGER, $this->trans('elio_fast_order.flash.dangerTotalCountProducts', ['%count%' => 10]));
+        $countFields = $this->systemConfigService->get('ElioFastOrder.config.countFormFields');
+        if($productsCount < $countFields){
+            $this->addFlash(self::DANGER, $this->trans('elio_fast_order.flash.dangerTotalCountProducts', ['%count%' => $countFields]));
             return false;
         }
 

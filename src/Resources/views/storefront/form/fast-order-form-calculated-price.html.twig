@@ -1,0 +1,10 @@
+{% block fast_order_form_calculated_price %}
+    <div class="fast-order-calculated-price">
+
+        {% if calculatedPrice == null %}
+            {% set calculatedPrice = 0 %}
+        {% endif %}
+
+        {{ calculatedPrice|currency }}
+    </div>
+{% endblock %}

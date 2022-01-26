@@ -80,8 +80,8 @@
                                                         </div>
 
                                                         <div class="col-5 fast-order-col-right d-flex justify-content-end ">
-                                                            <h4>
-                                                                {{ 0|format_currency(context.currency.isoCode) }}
+                                                            <h4 class="fast-order-main-product-total-price">
+                                                                {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig' %}
                                                             </h4>
                                                         </div>
                                                     </div>
@@ -97,7 +97,9 @@
 
                                         <div class="row d-flex align-content-end justify-content-end">
                                             <p class="mr-2 mb-0">{{ 'elio_fast_order.form.totalAmount'|trans }}</p>
-                                            <h4 class="mb-0"><span>{{ 0|format_currency(context.currency.isoCode) }}</span></h4>
+                                            <h4 class="fast-order-total-amount mb-0">
+                                                {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig' %}
+                                            </h4>
                                         </div>
 
                                     {% endblock %}

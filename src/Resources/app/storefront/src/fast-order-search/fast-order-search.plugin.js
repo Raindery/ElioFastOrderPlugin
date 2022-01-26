@@ -72,7 +72,7 @@ export default class FastOrderSearch extends Plugin {
 
         for(let product of products){
             let productNumber = product.getAttribute('data-product-number');
-            product.addEventListener(this._fastOrderPlugin.inputEventClick, this._productSelect.bind(this,productNumber));
+            product.addEventListener(this._fastOrderPlugin.inputEventClick, this._productSelect.bind(this, productNumber));
         }
     }
 
