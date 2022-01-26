@@ -1,32 +1,61 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import HttpClient from 'src/service/http-client.service';
 import DomAccess from 'src/helper/dom-access.helper';
+import DeviceDetection from 'src/helper/device-detection.helper';
 
 export default class FastOrder extends Plugin{
 
     init(){
-        this._client = new HttpClient();
-
         this.fastOrderProductPlugin = [];
+        this.inputEventClick = (DeviceDetection.isTouchDevice()) ? 'touchstart' : 'click';
 
-        this.quantity = DomAccess.querySelector(this.el, '.fast-order-form-inputs-row-select-quantity');
 
-        document.body.addEventListener('click', this.onBodyClick.bind(this));
+        this._totalAmount = 0;
+        this._totalAmountText = DomAccess
+        // event click on body for hide search result
+        document.body.addEventListener(this.inputEventClick, this.bodyClick.bind(this));
     }
 
-    onBodyClick(){
+    bodyClick(){
+        this.$emitter.publish('bodyClick');
+    }
 
-        for(let plugin of this.fastOrderProductPlugin){
-            plugin.hello();
+    calculateTotalAmount() {
+        for (let product of this.fastOrderProductPlugin) {
+            if (product.selectedProductNumber == null) {
+                continue;
+            }
+
+            this._totalAmount += product.calculatedPrice;
+
+
         }
+
+        this._displayTotalAmount();
     }
 
-    _registerEvents(){
-        this.quantity.addEventListener('change', this._onChangeQuantity.bind(this));
+
+    _displayTotalAmount(){
+        console.log(this._totalAmount);
     }
 
-    _onChangeQuantity(){
-        this._client.post('/fast-order/change-quantity', null, (response)=>{alert(response)});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    hello(){
+        alert();
     }
 }
 

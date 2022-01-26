@@ -5,15 +5,14 @@
         {% block fast_order_form_inputs_row_number_field %}
             <div class="fast-order-form-inputs-row-number-field col-7" data-fast-order-search >
 
-                <input id="search-input"
-                       type="text"
+                <input type="text"
                        name="productData[{{ fastOrderProductId }}][productNumber]"
                        placeholder="{{'elio_fast_order.form.fieldPlaceholderInColLeft' |trans }}"
                        required="required"
-                       class="form-control"
+                       class="form-control fast-order-form-product-number-field"
                        autocomplete="off"
                 >
-                <div id="search-result"></div>
+                <div class="fast-order-search-result"></div>
 
             </div>
         {% endblock %}
@@ -21,7 +20,7 @@
         {% block fast_order_form_inputs_row_select_quantity %}
 
             <div class="fast-order-form-inputs-row-select-quantity col-5">
-                    <select class="custom-select"
+                    <select class="custom-select fast-order-form-product-quantity-field"
                             name="productData[{{ fastOrderProductId }}][productQuantity]"
                             required="required"
                     >

@@ -6,6 +6,7 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Content\Product\Cart\ProductLineItemFactory;
 use Shopware\Core\Content\Product\ProductEntity;
+use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -15,6 +16,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 
 use Shopware\Storefront\Page\GenericPageLoaderInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -92,18 +94,40 @@ class FastOrderController extends StorefrontController
     }
 
     /**
+     * @Route("/fast-order/change-quantity/{productNumber}/{productQuantity}", name="storefront.fast-order.change-quantity", defaults={"XmlHttpRequest"=true}, methods={"GET"})
+     * @param Request $request
      * @param SalesChannelContext $context
      * @param string $productNumber
-     * @return ProductEntity|null
+     * @param int $productQuantity
+     * @return JsonResponse
      */
-    private function getProductByProductNumber(SalesChannelContext $context, string $productNumber): ?ProductEntity
+    public function changeQuantity(
+        Request $request,
+        SalesChannelContext $context,
+        string $productNumber,
+        int $productQuantity
+    ) : JsonResponse
+    {
+        $product = $this->getProductByProductNumber($context, $productNumber);
+
+        $calculatedPrice = ($product->getCalculatedPrices()->last()->getUnitPrice() * $productQuantity);
+
+        return new JsonResponse(['jsonCalculatedPrice'=>$calculatedPrice]);
+    }
+
+    /**
+     * @param SalesChannelContext $context
+     * @param string $productNumber
+     * @return SalesChannelProductEntity|null
+     */
+    private function getProductByProductNumber(SalesChannelContext $context, string $productNumber): ?SalesChannelProductEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('available', '1'));
         $criteria->addFilter(new EqualsFilter('productNumber', $productNumber));
 
         /**
-         * @var ProductEntity $product
+         * @var SalesChannelProductEntity $product
          */
         $product = $this->productsRepository->search($criteria, $context)->getEntities()->first();
 
