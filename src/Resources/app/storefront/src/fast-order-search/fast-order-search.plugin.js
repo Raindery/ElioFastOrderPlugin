@@ -68,7 +68,7 @@ export default class FastOrderSearch extends Plugin {
         this.searchProductResult.insertAdjacentHTML('beforeend', data);
         this._fastOrderPlugin.$emitter.subscribe('bodyClick', this._clearSearchResult.bind(this), {once: true});
 
-        let products = DomAccess.querySelectorAll(this.searchProductResult, '.fast-order-search-result-product');
+        let products = this.searchProductResult.querySelectorAll('.fast-order-search-result-product');
 
         for(let product of products){
             let productNumber = product.getAttribute('data-product-number');

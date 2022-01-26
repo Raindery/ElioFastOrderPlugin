@@ -10,7 +10,7 @@
             <name>countFormFields</name>
             <label>Count form fields</label>
             <label lang="de-DE">Count form fields</label>
-            <defaultValue>5</defaultValue>
+            <defaultValue>10</defaultValue>
         </input-field>
 
     </card>

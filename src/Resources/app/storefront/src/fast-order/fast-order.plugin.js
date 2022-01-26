@@ -46,28 +46,9 @@ export default class FastOrder extends Plugin{
 
 
     }
-    
+
     _displayTotalAmount(){
         console.log(this._totalAmount);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    hello(){
-        alert();
     }
 }
 
