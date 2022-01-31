@@ -1,1 +1,1 @@
-import './module/fast-order-administration';
+import './module/elio-fast-order';
