@@ -6,6 +6,14 @@
 
     <services>
 
+        <service id="Elio\FastOrder\Core\Content\FastOrder\FastOrderDefinition">
+            <tag name="shopware.entity.definition" entity="fast_order" />
+        </service>
+
+        <service id="Elio\FastOrder\Core\Content\FastOrderProductLineItem\FastOrderProductLineItemDefinition">
+            <tag name="shopware.entity.definition" entity="fast_order_product_line_item" />
+        </service>
+
         <service id="Elio\FastOrder\Controller\FastOrderController" public="true">
             <argument id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" type="service" />
             <argument id="sales_channel.product.repository" type="service"/>

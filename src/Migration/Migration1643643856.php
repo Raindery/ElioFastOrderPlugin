@@ -37,9 +37,11 @@ CREATE TABLE IF NOT EXISTS `fast_order_product_line_item` (
     `position`      INTEGER             NOT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk.fast_order_product_line_item.fast_order_id` FOREIGN KEY (`fast_order_id`)
-     REFERENCES `fast_order` (`id`) ON DELETE CASCADE  ON UPDATE CASCADE,
+     REFERENCES `fast_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk.fast_order_product_line_item.product_id` FOREIGN KEY (`product_id`)
-        REFERENCES `product` (`id`) ON DELETE CASCADE  ON UPDATE CASCADE
+        REFERENCES `product` (`id`) ON UPDATE CASCADE,
+    INDEX (`product_id`),
+    INDEX (`fast_order_id`),
 )
 ENGINE = InnoDB DEFAULT CHARSET utf8mb4 COLLATE = utf8mb4_unicode_ci;
 SQL;
