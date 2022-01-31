@@ -5,19 +5,19 @@ namespace Elio\FastOrder\Controller;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Content\Product\Cart\ProductLineItemFactory;
-use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 
 use Shopware\Storefront\Page\GenericPageLoaderInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,12 +32,16 @@ class FastOrderController extends StorefrontController
     private ProductLineItemFactory $productLineItemFactory;
     private GenericPageLoaderInterface $genericPageLoader;
     private SystemConfigService $systemConfigService;
+    private EntityRepositoryInterface $fastOrderRepository;
+    private EntityRepositoryInterface $fastOrderProductLineItemRepository;
 
     public function __construct(CartService $cartService,
         SalesChannelRepositoryInterface $productsRepository,
         ProductLineItemFactory $productLineItemFactory,
         GenericPageLoaderInterface $genericPageLoader,
-        SystemConfigService $systemConfigService
+        SystemConfigService $systemConfigService,
+        EntityRepositoryInterface $fastOrderRepository,
+        EntityRepositoryInterface $fastOrderProductLineItemRepository
     )
     {
         $this->cartService = $cartService;
@@ -45,6 +49,8 @@ class FastOrderController extends StorefrontController
         $this->productLineItemFactory = $productLineItemFactory;
         $this->genericPageLoader = $genericPageLoader;
         $this->systemConfigService = $systemConfigService;
+        $this->fastOrderRepository = $fastOrderRepository;
+        $this->fastOrderProductLineItemRepository = $fastOrderProductLineItemRepository;
     }
 
     /**
@@ -79,19 +85,43 @@ class FastOrderController extends StorefrontController
             return $this->redirectToRoute('storefront.fast-order.page');
         }
 
+        // Create FastOrder entity
+        $fastOrderId = Uuid::randomHex();
+        $this->fastOrderRepository->create([
+            [
+             'id' => $fastOrderId,
+             'sessionId' => $request->getSession()->getId(),
+             'createdAt' => date('Y-m-d H:i:s'),
+            ]
+        ], $context->getContext());
+
+
         /** @var LineItem[] $products */
         $products = array();
+        $fastOrderProductLineItems = [];
+        $fastOrderProductPosition  = 1;
+
         foreach ($productsData as $productData) {
             /** @var int $productQuantity */
             $productQuantity = $productData['productQuantity'];
 
             $product = $this->getProductByProductNumber($context, $productData['productNumber']);
-
             $products[] = $this->productLineItemFactory->create($product->getId(), [
                 'quantity' => $productQuantity
             ]);
+
+            $fastOrderProductLineItems[] = [
+                'id' => Uuid::randomHex(),
+                'fastOrderId' => $fastOrderId,
+                'productId' => $product->getId(),
+                'quantity' => (int)$productQuantity,
+                'position' => $fastOrderProductPosition,
+            ];
+
+            $fastOrderProductPosition++;
         }
 
+        $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
         $cart = $this->cartService->getCart($context->getToken(), $context);
         $this->cartService->add($cart, $products, $context);
 

@@ -2,8 +2,6 @@
 
 namespace Elio\FastOrder\Core\Content\FastOrder;
 
-
-
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
