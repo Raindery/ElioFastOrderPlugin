@@ -1,3 +1,4 @@
+import './page/fast-order-index';
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
 
@@ -11,7 +12,7 @@ Shopware.Module.register('elio-fast-order', {
 
     routes:{
       overview: {
-          component: 'sw-product-list',
+          component: 'fast-order-index',
           path: 'overview'
       },
     },
@@ -24,7 +25,7 @@ Shopware.Module.register('elio-fast-order', {
     navigation: [{
         label: 'elio-fast-order.general.mainMenuItemGeneral',
         color: '#ff3d58',
-        path: 'elio-fast-order.overview',
+        path: 'elio.fast.order.overview',
         icon: 'default-shopping-paper-bag-product',
         parent: 'sw-order'
     }]
