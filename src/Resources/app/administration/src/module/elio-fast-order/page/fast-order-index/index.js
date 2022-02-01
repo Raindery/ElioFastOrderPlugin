@@ -9,6 +9,11 @@ Shopware.Component.register('fast-order-index', {
     data: function () {
         return {
             fastOrderEntities: undefined,
+            fastOrderColumns: [
+                {property: 'id', label: 'Id', primary: true, inlineEdit: 'string'},
+                {property: 'sessionId', label: 'Session Id', inlineEdit: 'string'},
+                {property: 'createdAt', label: 'Created At'}
+            ]
         }
     },
 
@@ -27,9 +32,13 @@ Shopware.Component.register('fast-order-index', {
     created() {
         this.fastOrderRepository
             .search(new Criteria(), Shopware.Context.api)
-            .then((result) => {
+            .then(result => {
                 this.fastOrderEntities = result;
                 console.log(this.fastOrderEntities);
-            })
+            });
+    },
+
+    methods: {
+
     }
 });
