@@ -15,6 +15,13 @@ Shopware.Module.register('elio-fast-order', {
           component: 'fast-order-index',
           path: 'overview'
       },
+      detail: {
+          component: 'fast-order-detail',
+          path: 'detail/:id',
+          meta: {
+              parentPath: 'elio.fast.order.overview'
+          }
+      }
     },
 
     snippets:{

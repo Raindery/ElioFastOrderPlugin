@@ -10,7 +10,7 @@ Shopware.Component.register('fast-order-index', {
         return {
             fastOrderEntities: undefined,
             fastOrderColumns: [
-                {property: 'id', label: 'Id', primary: true, inlineEdit: 'string'},
+                {property: 'id', label: 'Id', primary: true, inlineEdit: 'string', routerLink: 'elio.fast.order.detail'},
                 {property: 'sessionId', label: 'Session Id', inlineEdit: 'string'},
                 {property: 'createdAt', label: 'Created At'}
             ]
