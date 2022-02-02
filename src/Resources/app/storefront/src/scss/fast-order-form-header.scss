@@ -1,0 +1,33 @@
+.fast-order-card-header{
+  background-color: #fff;
+  padding: 0;
+}
+
+.fast-order-header-menu-nav-items{
+  border: none;
+}
+
+.fast-order-header-menu-nav-items .nav-link{
+  border: none;
+  cursor: pointer;
+  border-bottom: .1rem solid #afafaf;
+  margin-left: 1rem;
+}
+
+.fast-order-header-menu-nav-items .nav-link:hover{
+  border: none;
+  border-bottom: .1rem solid #008490;
+}
+
+.fast-order-header-menu-nav-items .nav-link:first-child{
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.fast-order-active{
+  border-bottom: .1rem solid #008490;
+}
+
+.fast-order-form-description{
+  padding: 1rem 0;
+}

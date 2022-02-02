@@ -1,0 +1,125 @@
+// Search
+.fast-order-search-result{
+  width: 100%;
+  position: absolute;
+  z-index: 1000;
+}
+
+.fast-order-search-result-container{
+  max-height: 10rem;
+  height: auto;
+  width: 95%;
+
+  margin-top: .5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: .5rem;
+
+  border: 1px solid #bcc1c7;
+  background-color: #fff;
+
+  list-style: none;
+  user-select: none;
+  overflow: auto;
+
+  box-shadow: 0 10px 25px -15px #000;
+}
+
+.fast-order-search-result-product{
+  height: 4rem;
+  margin: 0 auto;
+  cursor: pointer;
+
+}
+
+.fast-order-search-result-product:hover{
+  color: #008490;
+}
+
+.fast-order-search-result-product .row{
+  height: 100%;
+}
+
+.fast-order-search-result-product-image-container{
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fast-order-search-result-product-image{
+  max-height: 50px;
+  max-width: 50px;
+}
+
+.fast-order-search-result-product-name{
+  height: 50%;
+}
+
+.fast-order-search-result-product-number{
+  height: 50%;
+
+  font-size: smaller;
+}
+
+.fast-order-search-result-product-price{
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  text-align: right;
+}
+
+.fast-order-search-result-not-found{
+  text-align: center;
+}
+
+//Selected product
+.fast-order-search-selected-product-image-container{
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+
+.fast-order-search-selected-product-image{
+  max-height: 50px;
+  max-width: 50px;
+}
+
+.fast-order-search-selected-product-name{
+  height: 50%;
+}
+
+.fast-order-search-selected-product-number{
+  height: 50%;
+  font-size: smaller;
+}
+
+.fast-order-search-selected-product-price{
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fast-order-search-selected-product-deselect{
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fast-order-search-selected-product-deselect-button{
+  height: 100%;
+  width: 100%;
+  padding: 0;
+}
+
+.fast-order-search-selected-product-deselect-button .icon svg{
+  position: center;
+}
