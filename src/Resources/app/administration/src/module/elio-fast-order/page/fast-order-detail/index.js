@@ -19,9 +19,9 @@ Shopware.Component.register('fast-order-detail', {
             fastOrderEntity: null,
             fastOrderLineItemEntities: null,
             fastOrderLineItemColumns: [
-                {property: 'product.id', label: 'Id', primary: true, inlineEdit:'string'},
-                {property: 'product.productNumber', label: 'Product number', inlineEdit: 'string'},
-                {property: 'quantity', label: 'Quantity', inlineEdit: 'string'},
+                {property: 'product.id', label: this.$tc('elio-fast-order.detail.columnIdLabel'), primary: true, inlineEdit:'string'},
+                {property: 'product.productNumber', label: this.$tc('elio-fast-order.detail.columnProductNumberLabel'), inlineEdit: 'string'},
+                {property: 'quantity', label: this.$tc('elio-fast-order.detail.columnQuantityLabel'), inlineEdit: 'string'},
             ],
         }
     },

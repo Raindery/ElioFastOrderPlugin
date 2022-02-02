@@ -4,7 +4,7 @@
         {% block fast_order_detail_header %}
             <template slot="smart-bar-header">
                 {% block fast_order_detail_header_titile %}
-                    <h2>Fast order {{ fastOrderId }}</h2>
+                    <h2>{{ $tc('elio-fast-order.detail.pageHeaderTitle') }} {{ fastOrderId }}</h2>
                 {% endblock %}
             </template>
         {% endblock %}
@@ -18,24 +18,19 @@
                             :title="$tc('elio-fast-order.detail.detailCardTitle')"
                     >
                         <div v-if="fastOrderEntity">
-
                             <h3>
-                                <b>Id: </b>
+                                <b>{{ $tc('elio-fast-order.detail.detailIdText') }} </b>
                                 {{ fastOrderEntity.id }}
                             </h3>
-
                             <h3>
-                                <b>Session Id: </b>
+                                <b>{{ $tc('elio-fast-order.detail.detailSessionIdText') }}</b>
                                 {{ fastOrderEntity.sessionId }}
                             </h3>
-
                             <h3>
-                                <b>Created At: </b>
+                                <b>{{ $tc('elio-fast-order.detail.detailCreatedAtText') }} </b>
                                 {{ fastOrderEntity.createdAt |date({hour: '2-digit', minute: '2-digit'})  }}
                             </h3>
-
                         </div>
-
                     </sw-card>
 
                 {% endblock %}

@@ -10,9 +10,9 @@ Shopware.Component.register('fast-order-index', {
         return {
             fastOrderEntities: undefined,
             fastOrderColumns: [
-                {property: 'id', label: 'Id', primary: true, inlineEdit: 'string', routerLink: 'elio.fast.order.detail'},
-                {property: 'sessionId', label: 'Session Id', inlineEdit: 'string'},
-                {property: 'createdAt', label: 'Created At'}
+                {property: 'id', label: this.$tc('elio-fast-order.index.columnIdLabel'), primary: true, inlineEdit: 'string', routerLink: 'elio.fast.order.detail'},
+                {property: 'sessionId', label: this.$tc('elio-fast-order.index.columnSessionIdLabel'), inlineEdit: 'string'},
+                {property: 'createdAt', label: this.$tc('elio-fast-order.index.columnCreatedAtLabel')}
             ]
         }
     },
@@ -41,8 +41,4 @@ Shopware.Component.register('fast-order-index', {
                 this.fastOrderEntities = result;
             });
     },
-
-    methods: {
-
-    }
 });

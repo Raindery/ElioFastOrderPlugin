@@ -4,8 +4,22 @@
       "mainMenuItemGeneral": "Fast order",
       "descriptionTextModule": "Fast order administration module"
     },
+    "index": {
+      "columnIdLabel": "Id",
+      "columnSessionIdLabel": "Session Id",
+      "columnCreatedAtLabel": "Created At"
+    },
     "detail": {
+      "columnIdLabel": "Id",
+      "columnProductNumberLabel": "Product number",
+      "columnQuantityLabel": "Quantity",
+
+      "pageHeaderTitle": "Fast Order",
       "detailCardTitle": "Details",
+      "detailIdText": "Fast Order Id:",
+      "detailSessionIdText": "Session Id:",
+      "detailCreatedAtText": "Created At:",
+
       "productsCardTitle": "Products"
     }
   }
