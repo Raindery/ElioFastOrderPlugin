@@ -1,5 +1,31 @@
 {% block fast_order_upload_form %}
     <div id="upload-form" class="fast-order-upload-form">
-        <h1>Upload CSV</h1>
+
+        {% block fast_order_upload_form_description %}
+            <div class="fast-order-upload-form-description row">
+
+            </div>
+        {% endblock %}
+
+        {% block fast_order_upload_form_attention%}
+            <div class="fast-order-upload-form-attention row">
+
+            </div>
+        {% endblock %}
+
+        <form action="">
+            {% block fast_order_upload_form_choose_file %}
+                <div class="fast-order-upload-form-choose-file row">
+                    
+                </div>
+            {% endblock %}
+
+            {% block fast_order_upload_form_submit_button %}
+                <div class="fast-order-upload-form-submit-button row">
+
+                </div>
+            {% endblock %}
+        </form>
+
     </div>
 {% endblock %}
