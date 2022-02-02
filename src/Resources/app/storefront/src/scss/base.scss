@@ -2,6 +2,23 @@
 @import "fast-order-form-body.scss";
 @import "fast-order-search.scss";
 
-.fast-order-form-container {
+.fast-order-main {
   margin-top: 5rem;
 }
+
+.fast-order-header-menu-nav-items .fast-order-active{
+  border-bottom: .1rem solid #008490;
+}
+
+.fast-order-form-body .fast-order-show-form{
+  display: block;
+}
+
+.fast-order-upload-form{
+  display: none;
+}
+
+.fast-order-enter-articles-form{
+  display: none;
+}
+

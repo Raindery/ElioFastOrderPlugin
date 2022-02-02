@@ -1,6 +1,11 @@
 {% block fast_order_enter_articles_form %}
-
     <div id="enter-articles-form" class="fast-order-enter-articles-form">
+        {% block fast_order_form_description %}
+            <p class="fast-order-form-description card-text row">
+                {{ 'elio_fast_order.form.description'|trans }}
+            </p>
+        {% endblock %}
+
         {% block fast_order_form_titles %}
             <div class="row align-items-start">
                 <div class="col-7 fast-order-col-left">
@@ -18,21 +23,17 @@
         {% endblock %}
 
         {% block fast_order_form %}
-
             <form action="{{ path('storefront.fast-order.add-to-card') }}"
                   method="post"
                   data-form-csrf-handler="true"
                   class="fast-order-form">
 
                 {% block fast_order_form_input_fields %}
-
                     {% set countFormFields = config('ElioFastOrder.config.countFormFields') %}
                     {% for i in 0..countFormFields - 1 %}
-
                         {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-inputs-row.html.twig'
                             with{ fastOrderProductId:i }
                         %}
-
                         {% block fast_order_form_main_product_amount %}
                             <div class="row justify-content-end">
                                 <h4 class="fast-order-main-product-total-price">
@@ -40,35 +41,26 @@
                                 </h4>
                             </div>
                         {% endblock %}
-
                     {% endfor %}
-
                 {% endblock %}
 
                 {% block fast_order_total_amount %}
-
                     <div class="row justify-content-end fast-order-total-amount-row">
                         <p class="mr-2 mb-0">{{ 'elio_fast_order.form.totalAmount'|trans }}</p>
                         <h4 class="fast-order-total-amount mb-0">
                             {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig' %}
                         </h4>
                     </div>
-
                 {% endblock %}
 
                 {% block fast_order_submit_button %}
-
                     <div class="row align-items-start fast-order-input-submit">
                         <button class="btn btn-primary" type="submit" >{{ 'elio_fast_order.form.submitTitle'|trans }}</button>
                     </div>
-
                 {% endblock %}
 
                 {{ sw_csrf('storefront.fast-order.add-to-card') }}
-
             </form>
-
         {% endblock %}
     </div>
-
 {% endblock %}
