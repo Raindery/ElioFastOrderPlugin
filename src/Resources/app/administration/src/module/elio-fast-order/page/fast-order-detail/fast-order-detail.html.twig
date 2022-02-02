@@ -1,14 +1,62 @@
 {% block fast_order_detail %}
 
-    <sw-page class="fast-order-detail">
+    <sw-page v-if="fastOrderId" class="fast-order-detail">
         {% block fast_order_detail_header %}
-
             <template slot="smart-bar-header">
-                <h2>
-                    Fast Order
-                </h2>
+                {% block fast_order_detail_header_titile %}
+                    <h2>Fast order {{ fastOrderId }}</h2>
+                {% endblock %}
             </template>
+        {% endblock %}
 
+        {% block fast_order_detail_content %}
+            <template class="fast-order-detail-content" slot="content">
+
+                {% block fast_order_detail_content_details %}
+
+                    <sw-card
+                            :title="$tc('elio-fast-order.detail.detailCardTitle')"
+                    >
+                        <div v-if="fastOrderEntity">
+
+                            <h3>
+                                <b>Id: </b>
+                                {{ fastOrderEntity.id }}
+                            </h3>
+
+                            <h3>
+                                <b>Session Id: </b>
+                                {{ fastOrderEntity.sessionId }}
+                            </h3>
+
+                            <h3>
+                                <b>Created At: </b>
+                                {{ fastOrderEntity.createdAt |date({hour: '2-digit', minute: '2-digit'})  }}
+                            </h3>
+
+                        </div>
+
+                    </sw-card>
+
+                {% endblock %}
+
+                {% block fast_order_detailt_content_products %}
+
+                    <sw-card
+                            v-if="fastOrderLineItemEntities"
+                            :title="$tc('elio-fast-order.detail.productsCardTitle')"
+                    >
+                        <sw-data-grid
+                                :dataSource="fastOrderLineItemEntities"
+                                :columns="fastOrderLineItemColumns"
+                                :showSelection="false"
+                                :showActions="false">
+                        </sw-data-grid>
+                    </sw-card>
+
+                {% endblock %}
+
+            </template>
         {% endblock %}
     </sw-page>
 

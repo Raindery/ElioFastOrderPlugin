@@ -1,13 +1,21 @@
 {% block fast_order_index %}
     <sw-page class="fast-order-index">
-        <template slot="content">
 
-            {% block fast_order_index_content %}
-                <sw-data-grid :dataSource="fastOrderEntities" :columns="fastOrderColumns" :showSelection="false">
+        {% block fast_order_index_content %}
+            <template slot="content">
+                <sw-data-grid
+                        :dataSource="fastOrderEntities"
+                        :columns="fastOrderColumns"
+                        :showSelection="false"
+                        :showActions="false"
+                >
 
+                    <template #column-createdAt="{ item }">
+                        {{ item.createdAt |date({hour: '2-digit', minute: '2-digit'}) }}
+                    </template>
                 </sw-data-grid>
-            {% endblock %}
+            </template>
+        {% endblock %}
 
-        </template>
     </sw-page>
 {% endblock %}

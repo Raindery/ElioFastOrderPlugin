@@ -3,6 +3,10 @@
     "general": {
       "mainMenuItemGeneral": "Fast order",
       "descriptionTextModule": "Fast order administration module"
+    },
+    "detail": {
+      "detailCardTitle": "Details",
+      "productsCardTitle": "Products"
     }
   }
 }

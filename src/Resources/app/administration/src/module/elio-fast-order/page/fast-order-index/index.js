@@ -30,11 +30,15 @@ Shopware.Component.register('fast-order-index', {
     },
 
     created() {
+
+        const criteria = new Criteria();
+        criteria
+            .addSorting(Criteria.sort('createdAt'));
+
         this.fastOrderRepository
-            .search(new Criteria(), Shopware.Context.api)
+            .search(criteria, Shopware.Context.api)
             .then(result => {
                 this.fastOrderEntities = result;
-                console.log(this.fastOrderEntities);
             });
     },
 

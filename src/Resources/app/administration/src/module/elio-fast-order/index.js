@@ -20,6 +20,11 @@ Shopware.Module.register('elio-fast-order', {
           path: 'detail/:id',
           meta: {
               parentPath: 'elio.fast.order.overview'
+          },
+          props:{
+              default: ($route)=>{
+                  return {fastOrderId: $route.params.id}
+              },
           }
       }
     },
