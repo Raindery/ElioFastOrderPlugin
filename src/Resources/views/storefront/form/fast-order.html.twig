@@ -70,25 +70,13 @@
                                                 with{ fastOrderProductId:i }
                                             %}
 
-                                            {% if i == 0 %}
-
                                                 {% block fast_order_form_main_product_amount %}
-                                                    <div class="row" style="padding: .3rem 0;">
-                                                        <div class="col-7 fast-order-col-left">
-                                                            <h6>
-                                                                {{ 'elio_fast_order.form.subtitleMainProduct'|trans }}
-                                                            </h6>
-                                                        </div>
-
-                                                        <div class="col-5 fast-order-col-right d-flex justify-content-end ">
-                                                            <h4 class="fast-order-main-product-total-price">
-                                                                {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig' %}
-                                                            </h4>
-                                                        </div>
+                                                    <div class="row justify-content-end">
+                                                        <h4 class="fast-order-main-product-total-price">
+                                                            {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig' %}
+                                                        </h4>
                                                     </div>
                                                 {% endblock %}
-
-                                            {% endif %}
 
                                         {% endfor %}
 
@@ -96,7 +84,7 @@
 
                                     {% block fast_order_total_amount %}
 
-                                        <div class="row d-flex align-content-end justify-content-end">
+                                        <div class="row justify-content-end fast-order-total-amount-row">
                                             <p class="mr-2 mb-0">{{ 'elio_fast_order.form.totalAmount'|trans }}</p>
                                             <h4 class="fast-order-total-amount mb-0">
                                                 {% sw_include '@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig' %}
