@@ -16,13 +16,13 @@
         <form action="">
             {% block fast_order_upload_form_choose_file %}
                 <div class="fast-order-upload-form-choose-file row">
-                    
+                    <input type="file" placeholder="{{'elio_fast_order.uploadForm.inputFilePlaceholder' |trans }}">
                 </div>
             {% endblock %}
 
             {% block fast_order_upload_form_submit_button %}
                 <div class="fast-order-upload-form-submit-button row">
-
+                    <input type="submit" title="{{ 'elio_fast_order.uploadForm.submitButtonTitle'|trans }}">
                 </div>
             {% endblock %}
         </form>
