@@ -16,11 +16,15 @@ use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
-
 use Shopware\Storefront\Page\GenericPageLoaderInterface;
+
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @RouteScope(scopes={"storefront"})
@@ -69,7 +73,7 @@ class FastOrderController extends StorefrontController
     }
 
     /**
-     * @Route ("/fast-order/add-to-cart", name="storefront.fast-order.add-to-card", methods={"POST"})
+     * @Route ("/fast-order/add-to-cart", name="storefront.fast-order.add-to-cart", methods={"POST"})
      * @param Request $request
      * @param SalesChannelContext $context
      * @return Response
@@ -124,6 +128,84 @@ class FastOrderController extends StorefrontController
         $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
         $cart = $this->cartService->getCart($context->getToken(), $context);
         $this->cartService->add($cart, $products, $context);
+
+        $this->addFlash(self::SUCCESS, $this->trans('elio_fast_order.flash.successProductAddedToCart'));
+        return $this->forwardToRoute('frontend.checkout.cart.page');
+    }
+
+    /**
+     * @Route ("/fast-order/add-to-cart-form-file", name="storefront.fast-order.add-to-cart-from-file", methods={"POST"})
+     * @param Request $request
+     * @param SalesChannelContext $context
+     * @return Response
+     */
+    public function addProductsFromCsv(Request $request, SalesChannelContext $context):Response
+    {
+        /** @var UploadedFile|null $file*/
+        $file = $request->files->all()['fastOrderCsvFile'];
+        if(!$file){
+            throw new MissingRequestParameterException('fastOrderCsvFile');
+        }
+        $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
+
+        /** @var array|null $productsData */
+        $productsData = $serializer->decode($file->getContent(), 'csv', ['csv_delimiter' => ';']);
+        if(!$productsData === null){
+            $this->addFlash(self::DANGER, $this->trans('elio_fast_order.uploadFormFlash.wrongFile'));
+        }
+
+        // Get product data keys
+        $productDataKeys = array_keys($productsData[0]);
+        /** @var string $productNumberKey*/
+        $productNumberKey = $productDataKeys[0];
+        /**@var string $productQuantityKey*/
+        $productQuantityKey = $productDataKeys[1];
+
+        // Handle data from file
+        /** @var LineItem[] $productLineItem */
+        $productLineItem = [];
+        $fastOrderProductPosition = 1;
+        $fastOrderProductLineItems = [];
+        $fastOrderId = Uuid::randomHex();
+
+        foreach ($productsData as $data) {
+            $productNumber = $data[$productNumberKey];
+            $productQuantity = $data[$productQuantityKey];
+
+            $product = $this->getProductByProductNumber($context, $productNumber);
+            if($product === null){
+                $this->addFlash(self::DANGER, $this->trans('elio_fast_order.uploadFormFlash.notFoundProduct', ['%productNumber%' => $productNumber]));
+                return $this->redirectToRoute('storefront.fast-order.page');
+            }
+
+            $productLineItem[] = $this->productLineItemFactory->create($product->getId(), [
+                'quantity' => $productQuantity
+            ]);
+
+            $fastOrderProductLineItems[] = [
+                'id' => Uuid::randomHex(),
+                'fastOrderId' => $fastOrderId,
+                'productId' => $product->getId(),
+                'quantity' => (int)$productQuantity,
+                'position' => $fastOrderProductPosition,
+            ];
+
+            $fastOrderProductPosition++;
+        }
+
+        // Create fast order
+        $this->fastOrderRepository->create([
+            [
+                'id' => $fastOrderId,
+                'sessionId' => $request->getSession()->getId(),
+                'createdAt' => date('Y-m-d H:i:s'),
+            ]
+        ], $context->getContext());
+
+        // Set data to cart and database
+        $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+        $this->cartService->add($cart, $productLineItem, $context);
 
         $this->addFlash(self::SUCCESS, $this->trans('elio_fast_order.flash.successProductAddedToCart'));
         return $this->forwardToRoute('frontend.checkout.cart.page');

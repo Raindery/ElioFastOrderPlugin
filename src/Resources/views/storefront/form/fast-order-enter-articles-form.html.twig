@@ -23,7 +23,7 @@
         {% endblock %}
 
         {% block fast_order_form %}
-            <form action="{{ path('storefront.fast-order.add-to-card') }}"
+            <form action="{{ path('storefront.fast-order.add-to-cart') }}"
                   method="post"
                   data-form-csrf-handler="true"
                   class="fast-order-form">
@@ -59,7 +59,7 @@
                     </div>
                 {% endblock %}
 
-                {{ sw_csrf('storefront.fast-order.add-to-card') }}
+                {{ sw_csrf('storefront.fast-order.add-to-cart') }}
             </form>
         {% endblock %}
     </div>

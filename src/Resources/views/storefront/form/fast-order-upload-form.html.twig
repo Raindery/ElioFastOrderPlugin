@@ -13,18 +13,30 @@
             </div>
         {% endblock %}
 
-        <form action="">
+        <form
+            action="{{ path('storefront.fast-order.add-to-cart-from-file') }}"
+            method="post"
+            enctype="multipart/form-data"
+        >
             {% block fast_order_upload_form_choose_file %}
                 <div class="fast-order-upload-form-choose-file row">
-                    <input type="file" placeholder="{{'elio_fast_order.uploadForm.inputFilePlaceholder' |trans }}">
+                    <input
+                        name="fastOrderCsvFile"
+                        type="file"
+                        accept=".csv, text/csv"
+                        placeholder="{{'elio_fast_order.uploadForm.inputFilePlaceholder' |trans }}">
                 </div>
             {% endblock %}
 
             {% block fast_order_upload_form_submit_button %}
                 <div class="fast-order-upload-form-submit-button row">
-                    <input type="submit" title="{{ 'elio_fast_order.uploadForm.submitButtonTitle'|trans }}">
+                    <input
+                        type="submit"
+                    >
                 </div>
             {% endblock %}
+
+            {{ sw_csrf('storefront.fast-order.add-to-cart-from-file') }}
         </form>
 
     </div>

@@ -21,8 +21,13 @@
       "inputFileButtonLabel": "Browse",
       "submitButtonTitle": "Upload file"
     },
+    "uploadFormFlash": {
+      "wrongFile": "The file is wrong!",
+      "notFoundProduct": "The product not found by number %productNumber%"
+
+    },
     "flash": {
-      "successProductAddedToCart": "Product added to cart",
+      "successProductAddedToCart": "Products added to cart",
       "dangerProductNotFoundByNumber": "Product not found by number %number%",
       "dangerTotalCountProducts": "The total count of products must be more than %count%!"
     },
