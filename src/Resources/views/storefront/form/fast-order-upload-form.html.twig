@@ -3,13 +3,19 @@
 
         {% block fast_order_upload_form_description %}
             <div class="fast-order-upload-form-description row">
+                <p>
+                    {{ 'elio_fast_order.uploadForm.description' |trans }}
+                </p>
 
             </div>
         {% endblock %}
 
         {% block fast_order_upload_form_attention%}
             <div class="fast-order-upload-form-attention row">
-
+                <p>
+                    <b>{{ 'elio_fast_order.uploadForm.attentionLabel'|trans }}</b>
+                    {{ 'elio_fast_order.uploadForm.attentionText' |trans }}
+                </p>
             </div>
         {% endblock %}
 
@@ -19,20 +25,35 @@
             enctype="multipart/form-data"
         >
             {% block fast_order_upload_form_choose_file %}
-                <div class="fast-order-upload-form-choose-file row">
-                    <input
-                        name="fastOrderCsvFile"
-                        type="file"
-                        accept=".csv, text/csv"
-                        placeholder="{{'elio_fast_order.uploadForm.inputFilePlaceholder' |trans }}">
+                <div class="fast-order-upload-form-choose-file row justify-content-center">
+
+                    <div class="custom-file col-5">
+                        <input
+                            type="file"
+                            accept=".csv, text/csv"
+                            name="fastOrderCsvFile"
+                            class="custom-file-input"
+                            id="fast-order-csv-file"
+                            lang="de"
+                            required="required"
+                        >
+                        <label class="custom-file-label" for="fast-order-csv-file">
+                            {{'elio_fast_order.uploadForm.inputFileLabel' | trans }}
+                        </label>
+                    </div>
+
                 </div>
             {% endblock %}
 
             {% block fast_order_upload_form_submit_button %}
                 <div class="fast-order-upload-form-submit-button row">
-                    <input
-                        type="submit"
-                    >
+                    <button type="submit" class="btn btn-primary">
+                        {% sw_icon 'move-file' style{
+                            'pack':'default'
+                        } %}
+
+                        {{'elio_fast_order.uploadForm.submitButtonTitle' |trans }}
+                    </button>
                 </div>
             {% endblock %}
 

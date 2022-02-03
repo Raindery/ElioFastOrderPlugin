@@ -3,7 +3,7 @@
     "buttonTitle": "Fast order",
     "form": {
       "headerNavItemEnterArticles": "Enter articles",
-      "headerNavItemUpload": "Upload(CSV)",
+      "headerNavItemUpload": "Upload (CSV)",
       "description": "Please enter the product number and quantities you want to order. The availability of the product number is checked and displayed directly while typing. You can enter all data completely via keyboard. In the result, you can navigate through the results with the arrow up and arrow down key. With the enter key you can select the correct entry.",
       "titleInColLeft": "Product number",
       "fieldPlaceholderInColLeft": "Search product number",
@@ -13,11 +13,10 @@
       "submitTitle": "Add to shopping list"
     },
     "uploadForm": {
-      "description": "Here you can upload a list of product numbers and quantities. Please use a csv-file with char %char% as delimiter",
+      "description": "Here you can upload a list of product numbers and quantities. Please use a csv-file with char ; as delimiter",
       "attentionLabel": "Attention:",
       "attentionText": "The shopping list will be completely overwritten after uploading the file. Please use the download function to save you list. You can upload the file later and continue your work with it. You can use a downloaded file as template for new lists.",
       "inputFileLabel": "Choose file",
-      "inputFilePlaceholder": "Choose file",
       "inputFileButtonLabel": "Browse",
       "submitButtonTitle": "Upload file"
     },

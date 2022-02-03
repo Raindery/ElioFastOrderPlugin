@@ -1,13 +1,16 @@
 @import "fast-order-form-header.scss";
 @import "fast-order-form-body.scss";
 @import "fast-order-search.scss";
+@import "fast-order-upload-form";
 
 .fast-order-main {
   margin-top: 5rem;
+  margin-bottom: 5rem;
 }
 
 .fast-order-header-menu-nav-items .fast-order-active{
   border-bottom: .1rem solid #008490;
+  cursor: default;
 }
 
 .fast-order-form-body .fast-order-show-form{
