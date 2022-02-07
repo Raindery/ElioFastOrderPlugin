@@ -3,8 +3,8 @@
 namespace Elio\FastOrder\Controller;
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\LineItemFactoryRegistry;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Content\Product\Cart\ProductLineItemFactory;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -33,7 +33,7 @@ class FastOrderController extends StorefrontController
 {
     private CartService $cartService;
     private SalesChannelRepositoryInterface $productsRepository;
-    private ProductLineItemFactory $productLineItemFactory;
+    private LineItemFactoryRegistry $lineItemFactoryRegistry;
     private GenericPageLoaderInterface $genericPageLoader;
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $fastOrderRepository;
@@ -41,7 +41,7 @@ class FastOrderController extends StorefrontController
 
     public function __construct(CartService $cartService,
         SalesChannelRepositoryInterface $productsRepository,
-        ProductLineItemFactory $productLineItemFactory,
+        LineItemFactoryRegistry $lineItemFactoryRegistry,
         GenericPageLoaderInterface $genericPageLoader,
         SystemConfigService $systemConfigService,
         EntityRepositoryInterface $fastOrderRepository,
@@ -50,7 +50,7 @@ class FastOrderController extends StorefrontController
     {
         $this->cartService = $cartService;
         $this->productsRepository = $productsRepository;
-        $this->productLineItemFactory = $productLineItemFactory;
+        $this->lineItemFactoryRegistry = $lineItemFactoryRegistry;
         $this->genericPageLoader = $genericPageLoader;
         $this->systemConfigService = $systemConfigService;
         $this->fastOrderRepository = $fastOrderRepository;
@@ -110,27 +110,31 @@ class FastOrderController extends StorefrontController
             $productQuantity = $productData['productQuantity'];
 
             $product = $this->getProductByProductNumber($context, $productData['productNumber']);
-            $products[] = $this->productLineItemFactory->create($product->getId(), [
-                'quantity' => $productQuantity
-            ]);
+
+            $products[] = $this->lineItemFactoryRegistry->create([
+                'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
+                'referencedId' => $product->getId(),
+                'quantity' => $productQuantity,
+            ], $context);
 
             $fastOrderProductLineItems[] = [
                 'id' => Uuid::randomHex(),
                 'fastOrderId' => $fastOrderId,
                 'productId' => $product->getId(),
-                'quantity' => (int)$productQuantity,
+                'quantity' => $productQuantity,
                 'position' => $fastOrderProductPosition,
             ];
 
             $fastOrderProductPosition++;
         }
 
+
         $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
         $cart = $this->cartService->getCart($context->getToken(), $context);
         $this->cartService->add($cart, $products, $context);
 
         $this->addFlash(self::SUCCESS, $this->trans('elio_fast_order.flash.successProductAddedToCart'));
-        return $this->forwardToRoute('frontend.checkout.cart.page');
+        return $this->redirectToRoute('frontend.checkout.cart.page');
     }
 
     /**
@@ -178,9 +182,11 @@ class FastOrderController extends StorefrontController
                 return $this->redirectToRoute('storefront.fast-order.page');
             }
 
-            $productLineItem[] = $this->productLineItemFactory->create($product->getId(), [
-                'quantity' => $productQuantity
-            ]);
+            $productLineItem[] = $this->lineItemFactoryRegistry->create([
+                'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
+                'referencedId' => $product->getId(),
+                'quantity' => $productQuantity,
+            ], $context);
 
             $fastOrderProductLineItems[] = [
                 'id' => Uuid::randomHex(),
@@ -192,6 +198,8 @@ class FastOrderController extends StorefrontController
 
             $fastOrderProductPosition++;
         }
+
+        $productLineItem->
 
         // Create fast order
         $this->fastOrderRepository->create([
@@ -222,7 +230,12 @@ class FastOrderController extends StorefrontController
     {
         $product = $this->getProductByProductNumber($context, $productNumber);
 
-        $calculatedPrice = ($product->getCalculatedPrices()->last()->getUnitPrice() * $productQuantity);
+        $productPrice = $product->getCalculatedPrice();
+        if($product->getCalculatedPrices()->count() > 0){
+           $productPrice = $product->getCalculatedPrices()->last();
+        }
+
+        $calculatedPrice = $productPrice->getUnitPrice() * $productQuantity;
 
         return new Response($this->renderView('@ElioFastOrder/storefront/form/fast-order-form-calculated-price.html.twig', [
             'calculatedPrice' => $calculatedPrice
@@ -260,7 +273,13 @@ class FastOrderController extends StorefrontController
 
             for($i = 0; $i < $productNumbersCount; $i++ ){
                 $product = $this->getProductByProductNumber($context, $productNumbers[$i]);
-                $totalAmount += ($product->getCalculatedPrices()->last()->getUnitPrice() * $productQuantities[$i]);
+
+                $productPrice = $product->getCalculatedPrice();
+                if($product->getCalculatedPrices()->count() > 0){
+                    $productPrice = $product->getCalculatedPrices()->last();
+                }
+
+                $totalAmount += $productPrice->getUnitPrice() * $productQuantities[$i];
             }
         }
 
@@ -289,16 +308,7 @@ class FastOrderController extends StorefrontController
         $criteria->addFilter(new EqualsFilter('available', '1'));
         $criteria->addFilter(new EqualsFilter('productNumber', $productNumber));
 
-        /**
-         * @var SalesChannelProductEntity $product
-         */
-        $product = $this->productsRepository->search($criteria, $context)->getEntities()->first();
-
-        if($product === null){
-            return null;
-        }
-
-        return $product;
+        return $this->productsRepository->search($criteria, $context)->getEntities()->first();
     }
 
     private function isProductsDataValidate(array $productsData, SalesChannelContext $context): bool
