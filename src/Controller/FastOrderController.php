@@ -82,11 +82,12 @@ class FastOrderController extends StorefrontController
     {
         /** @var array $productsData */
         $productsData = $request->request->get('productData');
+
         if(!$productsData){
             throw new MissingRequestParameterException('productData');
         }
         if(!$this->isProductsDataValidate($productsData, $context)){
-            return $this->redirectToRoute('storefront.fast-order.page');
+            return $this->createActionResponse($request);
         }
 
         // Create FastOrder entity
@@ -99,35 +100,30 @@ class FastOrderController extends StorefrontController
             ]
         ], $context->getContext());
 
-
         /** @var LineItem[] $products */
         $products = array();
         $fastOrderProductLineItems = [];
         $fastOrderProductPosition  = 1;
 
         foreach ($productsData as $productData) {
-            /** @var int $productQuantity */
             $productQuantity = $productData['productQuantity'];
-
             $product = $this->getProductByProductNumber($context, $productData['productNumber']);
-
-            $products[] = $this->lineItemFactoryRegistry->create([
-                'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
-                'referencedId' => $product->getId(),
-                'quantity' => $productQuantity,
-            ], $context);
 
             $fastOrderProductLineItems[] = [
                 'id' => Uuid::randomHex(),
                 'fastOrderId' => $fastOrderId,
                 'productId' => $product->getId(),
-                'quantity' => $productQuantity,
+                'quantity' => (int)$productQuantity,
                 'position' => $fastOrderProductPosition,
             ];
-
             $fastOrderProductPosition++;
-        }
 
+            $products[] = $this->lineItemFactoryRegistry->create([
+                'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
+                'referencedId' => $product->getId(),
+                'quantity' => (int)$productQuantity,
+            ], $context);
+        }
 
         $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
         $cart = $this->cartService->getCart($context->getToken(), $context);
@@ -182,12 +178,6 @@ class FastOrderController extends StorefrontController
                 return $this->redirectToRoute('storefront.fast-order.page');
             }
 
-            $productLineItem[] = $this->lineItemFactoryRegistry->create([
-                'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
-                'referencedId' => $product->getId(),
-                'quantity' => $productQuantity,
-            ], $context);
-
             $fastOrderProductLineItems[] = [
                 'id' => Uuid::randomHex(),
                 'fastOrderId' => $fastOrderId,
@@ -195,11 +185,14 @@ class FastOrderController extends StorefrontController
                 'quantity' => (int)$productQuantity,
                 'position' => $fastOrderProductPosition,
             ];
-
             $fastOrderProductPosition++;
-        }
 
-        $productLineItem->
+            $productLineItem[] = $this->lineItemFactoryRegistry->create([
+                'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
+                'referencedId' => $product->getId(),
+                'quantity' => $productQuantity
+            ], $context);
+        }
 
         // Create fast order
         $this->fastOrderRepository->create([
@@ -250,13 +243,10 @@ class FastOrderController extends StorefrontController
      */
     public function calculateTotalAmount(Request $request, SalesChannelContext $context) : Response
     {
-        /**
-         * @var array $productNumbers
-         */
+        /*** @var array $productNumbers*/
         $productNumbers = $request->query->get('productNumbers');
-        /**
-         * @var array $productQuantities
-         */
+
+        /*** @var array $productQuantities*/
         $productQuantities = $request->query->get('productQuantities');
         $productNumbersCount = count($productNumbers);
 
@@ -268,7 +258,6 @@ class FastOrderController extends StorefrontController
         }
 
         $totalAmount = 0;
-
         if($productNumbersCount == count($productQuantities)){
 
             for($i = 0; $i < $productNumbersCount; $i++ ){
