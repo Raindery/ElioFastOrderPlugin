@@ -2,7 +2,9 @@
 
 namespace Elio\FastOrder\Controller;
 
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Cart\LineItemFactoryRegistry;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
@@ -100,8 +102,7 @@ class FastOrderController extends StorefrontController
             ]
         ], $context->getContext());
 
-        /** @var LineItem[] $products */
-        $products = array();
+        $products = new LineItemCollection();
         $fastOrderProductLineItems = [];
         $fastOrderProductPosition  = 1;
 
@@ -118,16 +119,18 @@ class FastOrderController extends StorefrontController
             ];
             $fastOrderProductPosition++;
 
-            $products[] = $this->lineItemFactoryRegistry->create([
+            $products->add($this->lineItemFactoryRegistry->create([
                 'type' => LineItem::PRODUCT_LINE_ITEM_TYPE,
                 'referencedId' => $product->getId(),
                 'quantity' => (int)$productQuantity,
-            ], $context);
+            ], $context));
+
         }
 
         $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
+        
         $cart = $this->cartService->getCart($context->getToken(), $context);
-        $this->cartService->add($cart, $products, $context);
+        $this->cartService->add($cart, $products->getElements(), $context);
 
         $this->addFlash(self::SUCCESS, $this->trans('elio_fast_order.flash.successProductAddedToCart'));
         return $this->redirectToRoute('frontend.checkout.cart.page');
@@ -225,7 +228,7 @@ class FastOrderController extends StorefrontController
 
         $productPrice = $product->getCalculatedPrice();
         if($product->getCalculatedPrices()->count() > 0){
-           $productPrice = $product->getCalculatedPrices()->last();
+           $productPrice = $product->getCalculatedPrices()->first();
         }
 
         $calculatedPrice = $productPrice->getUnitPrice() * $productQuantity;
@@ -265,7 +268,7 @@ class FastOrderController extends StorefrontController
 
                 $productPrice = $product->getCalculatedPrice();
                 if($product->getCalculatedPrices()->count() > 0){
-                    $productPrice = $product->getCalculatedPrices()->last();
+                    $productPrice = $product->getCalculatedPrices()->first();
                 }
 
                 $totalAmount += $productPrice->getUnitPrice() * $productQuantities[$i];
