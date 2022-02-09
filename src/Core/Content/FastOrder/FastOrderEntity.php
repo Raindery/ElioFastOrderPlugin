@@ -2,6 +2,7 @@
 
 namespace Elio\FastOrder\Core\Content\FastOrder;
 
+use Elio\FastOrder\Core\Content\FastOrderProductLineItem\FastOrderProductLineItemCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -10,6 +11,7 @@ class FastOrderEntity extends Entity
     use EntityIdTrait;
 
     protected string $sessionId;
+    protected ?FastOrderProductLineItemCollection $fastOrderProducts = null;
 
     public function getSessionId() :string
     {
@@ -20,4 +22,16 @@ class FastOrderEntity extends Entity
     {
         $this->sessionId = $value;
     }
+
+
+    public function getFastOrderProducts(): FastOrderProductLineItemCollection
+    {
+        return $this->fastOrderProducts;
+    }
+
+    public function setFastOrderProducts(FastOrderProductLineItemCollection $value):void
+    {
+        $this->fastOrderProducts = $value;
+    }
+
 }

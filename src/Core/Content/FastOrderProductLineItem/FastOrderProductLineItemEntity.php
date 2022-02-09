@@ -12,29 +12,31 @@ class FastOrderProductLineItemEntity extends Entity
 {
     use EntityIdTrait;
 
-    protected FastOrderEntity $fastOrder;
-    protected ProductEntity $product;
+    protected ?FastOrderEntity $fastOrder = null;
+    protected ?ProductEntity $product = null;
     protected int $quantity;
     protected int $position;
+
 
     public function getFastOrder():FastOrderEntity
     {
         return $this->fastOrder;
     }
 
-    public function setFastOrder(FastOrderEntity $value):void
+    public function setFastOrder(FastOrderEntity $fastOrder):void
     {
-        $this->fastOrder = $value;
+        $this->fastOrder = $fastOrder;
     }
+
 
     public function getProduct():ProductEntity
     {
         return $this->product;
     }
 
-    public function setProduct(ProductEntity $value):void
+    public function setProduct(ProductEntity $product):void
     {
-        $this->product = $value;
+        $this->product = $product;
     }
 
     public function getQuantity():int

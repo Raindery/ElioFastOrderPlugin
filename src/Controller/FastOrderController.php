@@ -82,6 +82,12 @@ class FastOrderController extends StorefrontController
      */
     public function addProductsToCart(Request $request, SalesChannelContext $context) : Response
     {
+        /*
+        $cr = new Criteria();
+        $cr->setLimit(1);
+        $cr->addAssociation('fastOrderProducts');
+        $res = $this->fastOrderRepository->search($cr, $context->getContext());
+        */
         /** @var array $productsData */
         $productsData = $request->request->get('productData');
 
@@ -128,7 +134,6 @@ class FastOrderController extends StorefrontController
         }
 
         $this->fastOrderProductLineItemRepository->create($fastOrderProductLineItems, $context->getContext());
-        
         $cart = $this->cartService->getCart($context->getToken(), $context);
         $this->cartService->add($cart, $products->getElements(), $context);
 

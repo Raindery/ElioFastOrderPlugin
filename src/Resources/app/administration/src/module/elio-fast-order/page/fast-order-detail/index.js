@@ -38,34 +38,23 @@ Shopware.Component.register('fast-order-detail', {
             return this.repositoryFactory.create('fast_order');
         },
 
-        fastOrderProductLineItemRepository() {
-            return this.repositoryFactory.create('fast_order_product_line_item');
-        },
-
-        fastOrderProductLineItemCriteria() {
+        fastOrderCriteria() {
            const criteria = new Criteria();
 
            criteria
-               .addAssociation('product')
-               .addAssociation('fastOrder')
-               .addFilter(Criteria.equals('fastOrderId', this.fastOrderId))
-               .addSorting(Criteria.sort('position'));
+               .addAssociation('fastOrderProducts.product')
+               .addSorting(Criteria.sort('fastOrderProducts.position'));
 
            return criteria;
         }
     },
 
     created() {
-        this.fastOrderProductLineItemRepository
-            .search(this.fastOrderProductLineItemCriteria, Shopware.Context.api)
-            .then(results => {
-                this.fastOrderLineItemEntities = results;
-            });
-
         this.fastOrderRepository
-            .get(this.fastOrderId, Shopware.Context.api)
-            .then(fastOrderEntity => {
+            .get(this.fastOrderId, Shopware.Context.api, this.fastOrderCriteria)
+            .then((fastOrderEntity) => {
                 this.fastOrderEntity = fastOrderEntity;
+                this.fastOrderLineItemEntities = fastOrderEntity.fastOrderProducts;
             })
     },
 

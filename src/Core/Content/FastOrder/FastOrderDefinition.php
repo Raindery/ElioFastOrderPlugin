@@ -2,11 +2,13 @@
 
 namespace Elio\FastOrder\Core\Content\FastOrder;
 
+use Elio\FastOrder\Core\Content\FastOrderProductLineItem\FastOrderProductLineItemDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateTimeField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
@@ -35,7 +37,12 @@ class FastOrderDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('session_id', 'sessionId'))->addFlags(new Required()),
             (new DateTimeField('created_at', 'createdAt'))->addFlags(new Required()),
-            new DateTimeField('updated_at', 'updatedAt')
+            new DateTimeField('updated_at', 'updatedAt'),
+            new OneToManyAssociationField(
+                'fastOrderProducts',
+                FastOrderProductLineItemDefinition::class,
+                'fast_order_id'
+            )
         ]);
     }
 }
